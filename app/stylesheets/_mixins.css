@@ -17,6 +17,17 @@
 .clearfix { display: block; }
 .nowrap { white-space: nowrap; }
 .no-bullets { list-style: none; }
+.inline-list {
+  list-style-type: none;
+  margin: 0px;
+  padding: 0px;
+  display: inline;
+}
+.inline-list li {
+  margin: 0px;
+  padding: 0px;
+  display: inline;
+}
 .colborder {
   padding-right: 24px;
   margin-right: 25px;
