@@ -940,3 +940,280 @@ table#cart tr td {
 }
 table#cart tr#none td { border-bottom: none; }
 table#cart h4 { margin-bottom: 0em; }
+.no_margin_or_padding {
+  margin: 0;
+  padding: 0;
+}
+.leftie {
+  float: left;
+  width: 49%;
+}
+.rightie {
+  float: right;
+  width: 49%;
+}
+.clearfix {
+  overflow: hidden;
+  display: inline-block;
+}
+.clearfix { display: block; }
+.nowrap { white-space: nowrap; }
+.no-bullets { list-style: none; }
+.inline-list {
+  list-style-type: none;
+  margin: 0px;
+  padding: 0px;
+  display: inline;
+}
+.inline-list li {
+  margin: 0px;
+  padding: 0px;
+  display: inline;
+}
+.colborder {
+  padding-right: 24px;
+  margin-right: 25px;
+  border-right: 1px solid #eeeeee;
+}
+div#checkout {
+  width: 720px;
+  float: left;
+}
+div#checkout select.error {
+  padding: 0px;
+  background: #ffffff;
+  border: 1px solid #eae8e3;
+}
+div#checkout input.error {
+  padding: 0px;
+  background: #ffffff;
+  border: 1px solid #eae8e3;
+}
+div#checkout p {
+  clear: both;
+  margin-bottom: 15px;
+}
+div#checkout p label {
+  float: left;
+  width: 150px;
+  position: relative;
+  top: 5px;
+}
+div#checkout p span.req {
+  color: red;
+  margin-left: 2px;
+  position: relative;
+  top: -3px;
+}
+div#checkout p input {
+  margin-left: 150px;
+  width: 200px;
+  margin: 0px;
+}
+div#checkout p select {
+  margin-left: 150px;
+  width: 200px;
+  margin: 0px;
+}
+div#checkout p label.error {
+  color: red;
+  clear: both;
+  margin: 0px 0px 5px 150px;
+  top: 0px;
+  font-size: 11px;
+  border: none;
+  padding: 0px;
+  background: #ffffff;
+}
+div#checkout .checkout .inner {
+  display: none;
+  padding: 10px 2px;
+}
+div#checkout .checkout.disabled h2 {
+  padding-left: 32px;
+  color: #afafaf;
+  font-size: 1.4em;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #dddddd;
+  margin-bottom: 0.25em;
+}
+div#checkout .checkout.completed h2 {
+  padding-left: 32px;
+  color: #afafaf;
+  font-size: 1.4em;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #dddddd;
+  margin-bottom: 0.25em;
+}
+div#checkout .checkout.completed h2 {
+  color: #111111;
+  border-color: #999999;
+}
+div#checkout div#checkout .checkout.disabled:last-child h2 { border-bottom: none; }
+div#checkout div#checkout .checkout.completed:last-child h2 { border-bottom: none; }
+div#checkout div#registration div.error {
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  width: 815px;
+}
+div#checkout div#shipping_method div.error {
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  width: 815px;
+}
+div#checkout div#billing input { border: 1px solid #bbbbbb; }
+div#checkout div#shipping input { border: 1px solid #bbbbbb; }
+div#checkout div#payment input { border: 1px solid #bbbbbb; }
+div#checkout div#registration_input input { border: 1px solid #bbbbbb; }
+div#checkout label.radio { display: inline; }
+div#checkout div#methods p { margin-bottom: 7px; }
+div#checkout div#methods p input {
+  display: inline;
+  float: none;
+}
+div#checkout div#methods p label {
+  display: inline;
+  float: none;
+}
+div#checkout div#methods p label {
+  margin: 0px 0px 0px 5px;
+  top: -1px;
+  width: 300px;
+}
+div#checkout div#methods p input { width: 15px; }
+div#checkout div#registration_choice p { margin-bottom: 7px; }
+div#checkout div#registration_choice p input {
+  display: inline;
+  float: none;
+}
+div#checkout div#registration_choice p label {
+  display: inline;
+  float: none;
+}
+div#checkout div#registration_choice p label {
+  margin: 0px 0px 0px 5px;
+  top: -1px;
+  width: 300px;
+}
+div#checkout div#registration_choice p input { width: 15px; }
+div#checkout #registration { background: transparent "../images/steps/1.png" top right no-repeat; }
+div#checkout #registration div#registration_choice {
+  float: left;
+  block: none;
+  margin-bottom: 1em;
+}
+div#checkout #registration #registration_input {
+  float: left;
+  margin-left: 100px;
+}
+div#checkout #registration #registration_input p { width: 365px; }
+div#checkout #registration #guest_user { display: none; }
+div#checkout #registration #existing_user { display: none; }
+div#checkout #registration #already_logged_in { display: none; }
+div#checkout #registration.completed h2 { background: transparent url(../images/steps/1_small.png) top left no-repeat; }
+div#checkout #registration.disabled h2 { background: transparent url(../images/steps/1_small.png) top left no-repeat; }
+div#checkout #billing { background: transparent url("../images/steps/2.png") top right no-repeat; }
+div#checkout #shipping { background: transparent "../images/steps/3.png" top right no-repeat; }
+div#checkout #shipping span#clear_same_address {
+  clear: both;
+  display: block;
+}
+div#checkout #shipping #checkout_same_address {
+  float: left;
+  display: block;
+  border: 1px solid #bbbbbb;
+  width: 20px;
+  height: 20px;
+}
+div#checkout #shipping #checkout_same_address:hover { cursor: pointer; }
+div#checkout #shipping #checkout_same_address.is_checked { background: transparent url(../images/checkmark.png) top right no-repeat; }
+div#checkout #shipping.completed { padding-left: 32px; }
+div#checkout #shipping.disabled h2 { padding-left: 32px; }
+div#checkout #shipping_method { background: transparent url("../images/steps/4.png") top right no-repeat; }
+div#checkout #shipping_method div.inner { padding-top: 0px; }
+div#checkout #shipping_method div.error { display: none; }
+div#checkout #payment { background: transparent url("../images/steps/5.png") top right no-repeat; }
+div#checkout #payment p select { width: 75px; }
+div#checkout #confirmation { background: transparent url("../images/steps/6.png") top right no-repeat; }
+div#checkout #confirmation table.order-summary .price { width: 165px; }
+div#checkout #confirmation table.order-summary .qty { width: 165px; }
+div#checkout #confirmation table.order-summary .total_display { width: 300px; }
+div#checkout #confirmation table.order-summary .total_display span {
+  display: block;
+  text-align: right;
+  padding-right: 150px;
+}
+div#checkout #confirmation #bdisplay {
+  float: left;
+  width: 300px;
+  clear: right;
+}
+div#checkout #confirmation #sdisplay {
+  float: left;
+  width: 300px;
+  clear: right;
+}
+div#checkout input#continue_billing {
+  display: block;
+  clear: both;
+  margin-top: 10px;
+}
+div#checkout input#continue_shipping {
+  display: block;
+  clear: both;
+  margin-top: 10px;
+}
+div#checkout input#continue_billing {
+  cursor: pointer;
+  width: 100px;
+}
+div#checkout input#continue_shipping {
+  cursor: pointer;
+  width: 100px;
+}
+div#checkout p input#continue_registration {
+  cursor: pointer;
+  width: 100px;
+}
+div#checkout p input#continue_shipping_method {
+  cursor: pointer;
+  width: 100px;
+}
+div#checkout p input#continue_payment {
+  cursor: pointer;
+  width: 100px;
+}
+div#checkout #confirm_order .inner input {
+  cursor: pointer;
+  width: 100px;
+}
+div#checkout input#checkout_same_address {
+  margin-top: 8px;
+  width: 15px;
+}
+div#order table.order-summary .price { width: 165px; }
+div#order table.order-summary .qty { width: 165px; }
+div#order table.order-summary .total_display { width: 300px; }
+div#order table.order-summary .total_display span {
+  display: block;
+  text-align: right;
+  padding-right: 150px;
+}
+tbody#subtotal { border-bottom: 1px solid #dddddd; }
+tbody#order-credits { color: #ff0000; }
+div#checkout-summary {
+  float: right;
+  width: 180px;
+  background-color: #c3c9df;
+  padding: 20px;
+  margin-top: 10px;
+}
+div#checkout-summary th { padding: 0px; }
+div#checkout-summary td { padding: 0px; }
+div#checkout-summary caption { padding: 0px; }
+input.text, input.title, input[type="text"] {
+  padding: 1px 0px;
+  margin: 0;
+}
