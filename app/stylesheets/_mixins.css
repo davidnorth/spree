@@ -1,0 +1,23 @@
+.no_margin_or_padding {
+  margin: 0;
+  padding: 0;
+}
+.leftie {
+  float: left;
+  width: 49%;
+}
+.rightie {
+  float: right;
+  width: 49%;
+}
+.clearfix {
+  overflow: hidden;
+  display: inline-block;
+}
+.clearfix { display: block; }
+.nowrap { white-space: nowrap; }
+.colborder {
+  padding-right: 24px;
+  margin-right: 25px;
+  border-right: 1px solid #eeeeee;
+}
