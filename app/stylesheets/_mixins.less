@@ -30,17 +30,23 @@
 
 .nowrap { white-space: nowrap; }
 
+.no-bullets {
+  list-style: none;
+}
 
 /* Compass/blueprint mixins for layout */
 
 @col_margin: 10px;
-@col_with: 10px;
+@col_width: 30px;
 
-.column (@span: 1) {
+.column-last (@span: 1) {
   display: inline;
   float: left;
-  margin-right: 10px;
-  width: 150px;
+  width: @col_width * @span + (@col_margin * (@span - 1));
+}
+.column (@span: 1) {
+  .column-last(@span);
+  margin-right: @col_margin;
 }
 
 .colborder {

@@ -16,6 +16,7 @@
 }
 .clearfix { display: block; }
 .nowrap { white-space: nowrap; }
+.no-bullets { list-style: none; }
 .colborder {
   padding-right: 24px;
   margin-right: 25px;

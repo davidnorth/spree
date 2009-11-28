@@ -32,10 +32,10 @@ a { outline: none; }
 }
 
 body.one-col #content {
-  .column(24);
+  .column-last(24);
 }
 body.two-col #content {
-  .column(19);
+  .column-last(19);
 }
 
 #header {
@@ -70,56 +70,3 @@ p img {
   margin-right: 5px;
   vertical-align: middle;
 }
-  
-/*
-
-+column(4)
-+colborder
-
-+column(4)
-+colborder
-
-#content
-  body.one-col &
-    +column(24,"last")
-  body.two-col &
-    +column(19,"last")
-
-#header
-  :position relative
-  :color = !medium_blue
-  :clear both
-  a
-    :color = !medium_blue
-    &:hover
-      :color = !light_blue
-#footer
-  :padding-top 2em
-  :clear both
-  div.left
-    :width 45%
-  div.right
-    :width 55%
-
-h1
-  :font-size 2.5em
-
-.form-buttons, .clear
-  :clear both
-
-input.title
-  :width auto
-
-p
-  &.follow-all
-    :font-size 1.3em
-    :text-align center
-    :display block
-  img
-    :float left
-    :margin-right 5px
-    :vertical-align middle
-
-
-
-*/
