@@ -6,7 +6,6 @@
 }
 
 
-
 div#checkout {
   width: 720px;
   float: left;
@@ -16,9 +15,6 @@ div#checkout {
     background: @white;
     border: 1px solid #EAE8E3;
   }
-
-
-
 
   p {
     clear: both;
@@ -132,6 +128,10 @@ div#checkout {
   #billing {
     .checkout_region(url("../images/steps/2.png"), url("../images/steps/2_small.png"));
   }
+  #billing.completed h2, #billing.disabled h2 {
+    background: transparent url(../images/steps/2_small.png) top left no-repeat;
+  }
+
   #shipping {
     .checkout_region("../images/steps/3.png", "../images/steps/3_small.png");
     span#clear_same_address {
@@ -148,17 +148,26 @@ div#checkout {
     #checkout_same_address:hover { cursor: pointer; }
     #checkout_same_address.is_checked { background: transparent url(../images/checkmark.png) top right no-repeat; }
   }
-  #shipping.completed, #shipping.disabled h2 { padding-left: 32px; }
+  #shipping.completed, #shipping.disabled h2 {
+    padding-left: 32px;
+    background: transparent url(../images/steps/3_small.png) top left no-repeat;
+  }
 
   #shipping_method {
     .checkout_region(url("../images/steps/4.png"), url("../images/steps/4_small.png"));
     div.inner { padding-top: 0px; }
     div.error { display: none; }
   }
+  #shipping_method.completed h2, #shipping_method.disabled h2 {
+    background: transparent url(../images/steps/4_small.png) top left no-repeat;
+  }
 
   #payment {
     .checkout_region(url("../images/steps/5.png"), url("../images/steps/5_small.png"));
     p select { width: 75px; }
+  }
+  #payment.completed h2, #payment.disabled h2 {
+    background: transparent url(../images/steps/5_small.png) top left no-repeat;
   }
 
   #confirmation {
