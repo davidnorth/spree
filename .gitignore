@@ -57,3 +57,4 @@ coverage/*
 var
 TAGS
 nbproject
+app/stylesheets/*.css
