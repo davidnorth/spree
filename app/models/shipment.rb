@@ -31,6 +31,27 @@ class Shipment < ActiveRecord::Base
     end
   end
 
+  # shipment state machine (see http://github.com/pluginaweek/state_machine/tree/master for details)
+  state_machine :initial => 'pending' do
+
+    event :complete do
+      transition :from => 'pending', :to => 'ready_to_ship'
+    end
+    event :transmit do
+      transition :from => 'ready_to_ship', :to => 'transmitted'
+    end
+    event :acknowledge do
+      transition :from => 'transmitted', :to => 'acknowledged'
+    end
+    event :reject do
+      transition :from => 'acknowledged', :to => 'unable_to_ship'
+    end
+    event :ship do
+      transition :from => 'acknowledged', :to => 'shipped'
+    end
+
+  end
+
   private
 
   def generate_shipment_number
