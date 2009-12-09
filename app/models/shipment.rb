@@ -4,6 +4,7 @@ class Shipment < ActiveRecord::Base
   belongs_to :address
   has_one    :shipping_charge,   :as => :adjustment_source
   alias charge shipping_charge
+  has_many :state_events, :as => :stateful
 
   before_create :generate_shipment_number
   after_save :transition_order

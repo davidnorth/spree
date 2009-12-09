@@ -10,7 +10,7 @@ class Order < ActiveRecord::Base
   after_create :create_checkout_and_shippment, :create_tax_charge
 
   belongs_to :user
-  has_many :state_events
+  has_many :state_events, :as => :stateful
 
   has_many :line_items, :extend => Totaling, :dependent => :destroy
   has_many :inventory_units
@@ -286,6 +286,3 @@ class Order < ActiveRecord::Base
     self.checkout ||= Checkout.create(:order => self)
   end
 end
-
-# please don't remove it, it's needed to activite observer if user doesn't update environment.rb
-OrderObserver.instance

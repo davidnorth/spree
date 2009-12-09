@@ -11,6 +11,7 @@ class ShipmentTest < ActiveSupport::TestCase
     should "change to ready_to_ship when completed" do
       @shipment.complete!
       assert @shipment.ready_to_ship?
+      puts Zone.global
     end
 
   end
