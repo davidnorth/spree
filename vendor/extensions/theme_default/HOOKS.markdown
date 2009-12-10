@@ -70,15 +70,16 @@ Account (users/show.html.erb)
 Admin Views
 ===========
 
-
 Layout (layouts/admin.html.erb)
 -------------------------------
 
 * admin_head (allow scripts etc. to be added to the head tab)
 
+Navigation
+----------
+
 The following hooks allow list items to be added to various admin menus
 
-* admin_head (allows scripts etc. to be added to head tag)
 * admin_tabs
 * admin_product_sub_tabs
 * admin_order_tabs (sidebar menu for individual order)
