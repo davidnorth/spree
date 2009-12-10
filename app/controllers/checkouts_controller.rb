@@ -1,9 +1,12 @@
 class CheckoutsController < Spree::BaseController
   include Spree::Checkout::Hooks
   include ActionView::Helpers::NumberHelper # Needed for JS usable rate information
+
   before_filter :load_data
   before_filter :set_state
-
+  before_filter :enforce_registration, :except => :register
+  helper :users
+  
   resource_controller :singleton
   actions :show, :edit, :update
   belongs_to :order
@@ -15,6 +18,7 @@ class CheckoutsController < Spree::BaseController
   
   edit.before :edit_hooks  
   delivery.edit_hook :load_available_methods 
+  address.edit_hook :set_ip_address
     
   update.before :update_before
   update.after :update_after
@@ -40,6 +44,16 @@ class CheckoutsController < Spree::BaseController
     end
 
     render 'edit'
+  end
+  
+  def register
+    load_object
+    if request.method == :get
+      @user = User.new
+    else 
+      @checkout.update_attribute(:email, params[:checkout][:email])
+      redirect_to edit_object_url
+    end
   end
     
   private
@@ -114,7 +128,11 @@ class CheckoutsController < Spree::BaseController
     @available_methods = rate_hash
     @checkout.shipment.shipping_method_id ||= @available_methods.first[:id]
   end
-
+  
+  def set_ip_address
+    @checkout.update_attribute(:ip_address, request.env['REMOTE_ADDR'])
+  end
+  
   def complete_order
     flash[:notice] = t('order_processed_successfully')
   end
@@ -127,5 +145,11 @@ class CheckoutsController < Spree::BaseController
         :name => ship_method.name,
         :rate => number_to_currency(ship_method.calculate_cost(fake_shipment)) }
     end
+  end
+  
+  def enforce_registration
+    return if current_user or Spree::Config[:allow_anonymous_checkout]
+    store_location
+    redirect_to register_order_checkout_url(parent_object)
   end
 end
