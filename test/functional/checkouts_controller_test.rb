@@ -74,32 +74,86 @@ class CheckoutsControllerTest < ActionController::TestCase
   #   end
   # end      
                 
-  context "incomplete order" do
-    setup do 
-      @order = Factory(:order)
-      @params = { :order_id => @order.number } 
+  context "current_user" do
+    setup { set_current_user }
+    context "with incomplete order" do
+      setup do 
+        Spree::Config.set({ :default_country_id => countries(:united_states).id })
+        @order = Factory(:order)
+        @params = { :order_id => @order.number } 
+      end
+      context "GET /show" do
+        setup { get :show } 
+        should_redirect_to_first_step
+      end
+      context "GET /edit" do
+        setup { get :edit } 
+        should "assign the checkout ip address" do
+          assert_equal "0.0.0.0", assigns(:checkout).ip_address
+        end
+        should_render_template :edit
+      end
     end
-    context "GET /checkout" do
-      setup { get :show } 
-      should_redirect_to("first step of checkout") { edit_order_checkout_url(@order) }
-    end
+    context "complete order" do
+      setup do 
+        @order = create_complete_order
+        @params = { :order_id => @order.number } 
+      end
+      context "GET /checkout" do
+        setup { get :show } 
+        should_redirect_to_thanks
+      end    
+      context "GET /checkout/edit" do
+        setup { get :edit } 
+        should_redirect_to_thanks
+      end    
+      context "PUT /checkout" do
+        setup { post :update } 
+        should_redirect_to_thanks
+      end    
+    end  
   end
-  context "complete order" do
-    setup do 
-      @order = create_complete_order
-      @params = { :order_id => @order.number } 
+
+  context "no current_user" do
+    setup { @controller.stub!(:current_user, :return => nil) }
+    context "with incomplete order" do
+      setup do 
+        Spree::Config.set({ :default_country_id => countries(:united_states).id })
+        @order = Factory(:order)
+        @params = { :order_id => @order.number } 
+      end
+      context "GET /show" do
+        setup { get :show } 
+        should_redirect_to_register
+      end
+      context "GET /edit" do
+        setup { get :edit } 
+        should_redirect_to_register
+      end
+      context "with guest checkout enabled" do
+        setup { Spree::Config.set({ :allow_guest_checkout => true }) }
+        context "POST /register" do
+          setup do
+            @params[:checkout] = {:email => "test@foo.com"} 
+            post :register
+          end 
+          should_redirect_to_first_step
+          should "save the email property" do
+            assert_equal "test@foo.com", assigns(:checkout).reload.email
+          end
+        end
+      end
+      context "with anonymous checkout enabled" do
+        setup { Spree::Config.set({ :allow_anonymous_checkout => true }) }
+        context "GET /show" do
+          setup { get :show } 
+          should_redirect_to_first_step
+        end
+        context "GET /edit" do
+          setup { get :edit } 
+          should_render_template :edit
+        end
+      end
     end
-    context "GET /checkout" do
-      setup { get :show } 
-      should_redirect_to("thank you page") { order_url(@order) }
-    end    
-    context "GET /checkout/edit" do
-      setup { get :edit } 
-      should_redirect_to("thank you page") { order_url(@order) }
-    end    
-    context "PUT /checkout" do
-      setup { post :update } 
-      should_redirect_to("thank you page") { order_url(@order) }
-    end    
   end
 end
