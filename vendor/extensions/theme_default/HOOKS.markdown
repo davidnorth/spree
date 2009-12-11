@@ -3,7 +3,7 @@ Public Views
 
 Layout (layouts/spree_application.html.erb)
 ------------------------------------------------
-
+* head (allows you to add content at the bottom of the head tag)
 * sidebar_bottom (at the bottom of any page that has a sidebar)
 
 Homepage (products/index.html.erb)
