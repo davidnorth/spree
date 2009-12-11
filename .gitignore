@@ -28,6 +28,7 @@ public/blank_iframe.html
 public/images
 public/javascripts
 public/stylesheets
+public/ckeditor
 spree_dev
 spree_test
 tmp
