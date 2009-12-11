@@ -55,10 +55,6 @@ class OrderTest < ActiveSupport::TestCase
       setup { @order.complete }
       should_change("@order.state", :from => "in_progress", :to => "new") { @order.state }
 
-      should "create shipment" do
-        assert(@order.shipments.first, "Shipment was not created")
-      end
-
       should "update checkout completed_at" do
         assert(@order.checkout.completed_at, "Checkout#completed_at was not updated")
       end
@@ -77,13 +73,13 @@ class OrderTest < ActiveSupport::TestCase
       end
     end
     
-    context "ship!" do
-      should "make all shipments shipped" do
-        @order.update_attribute(:state, 'paid')
-        @order.ship!
-        assert @order.shipments.all?(&:shipped?)
-      end
-    end
+    #context "ship!" do
+    #  should "make all shipments shipped" do
+    #    @order.update_attribute(:state, 'paid')
+    #    @order.ship!
+    #    assert @order.shipments.all?(&:shipped?)
+    #  end
+    #end
     
   end
 end

@@ -7,7 +7,7 @@ class Order < ActiveRecord::Base
 
   before_create :generate_token
   before_save :update_line_items, :update_totals
-  after_create :create_checkout_and_shippment, :create_tax_charge
+  after_create :create_checkout, :create_tax_charge
 
   belongs_to :user
   has_many :state_events, :as => :stateful
@@ -20,6 +20,7 @@ class Order < ActiveRecord::Base
 
   has_one :checkout
   has_one :bill_address, :through => :checkout
+  has_one :ship_address, :through => :checkout
   has_many :shipments, :dependent => :destroy
 
   has_many :adjustments,      :extend => Totaling, :order => :position
@@ -35,7 +36,6 @@ class Order < ActiveRecord::Base
   accepts_nested_attributes_for :line_items
   accepts_nested_attributes_for :shipments
 
-  def ship_address; shipment.address; end
   delegate :shipping_method, :to =>:shipment
   delegate :email, :to => :checkout
   delegate :ip_address, :to => :checkout
@@ -164,7 +164,11 @@ class Order < ActiveRecord::Base
 
   # convenience method since many stores will not allow user to create multiple shipments
   def shipment
-    shipments.last
+    if shipments.any?
+      shipments.last
+    elsif checkout
+      @fake_shipment ||= shipments.build(:address => ship_address)
+    end
   end
 
   def contains?(variant)
@@ -291,8 +295,7 @@ class Order < ActiveRecord::Base
     self.token = Authlogic::Random.friendly_token
   end
 
-  def create_checkout_and_shippment
-    self.shipments << Shipment.create(:order => self)
+  def create_checkout
     self.checkout ||= Checkout.create(:order => self)
   end
 end

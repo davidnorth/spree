@@ -3,15 +3,18 @@ class Checkout < ActiveRecord::Base
 
   before_save :check_addresses_on_duplication
   after_save :process_coupon_code
+  after_save :update_shipping_method_of_order_shipment
   before_validation :clone_billing_address, :if => "@use_billing"
 
   belongs_to :order
   belongs_to :bill_address, :foreign_key => "bill_address_id", :class_name => "Address"
-  has_one :shipment, :through => :order, :source => :shipments, :order => "shipments.created_at ASC"
-  has_one :creditcard
+  belongs_to :ship_address, :foreign_key => "ship_address_id", :class_name => "Address"
+  belongs_to :shipping_method
 
+  has_one :creditcard
+  
   accepts_nested_attributes_for :bill_address
-  accepts_nested_attributes_for :shipment
+  accepts_nested_attributes_for :ship_address
   accepts_nested_attributes_for :creditcard
 
   attr_accessor :coupon_code
@@ -34,6 +37,12 @@ class Checkout < ActiveRecord::Base
   def completed_at
     order.completed_at
   end
+
+  # This is a temporary Shipment object for the purpose of showing available shiping rates in delivery step of checkout
+  def shipment
+    @shipment ||= Shipment.new(:order => order, :address => ship_address)
+  end
+
 
   alias :ar_valid? :valid?
   def valid?
@@ -61,7 +70,13 @@ class Checkout < ActiveRecord::Base
     state_machine.states.by_priority.map(&:name)
   end
 
+  def shipping_methods
+    return [] unless ship_address
+    ShippingMethod.all_available_to_address(ship_address)
+  end
+
   private
+
   def check_addresses_on_duplication
     if order.user
       if order.shipment && order.shipment.address
@@ -73,18 +88,17 @@ class Checkout < ActiveRecord::Base
       end
       if order.user.bill_address.nil?
         order.user.update_attribute(:bill_address, bill_address)
-      elsif bill_address.nil? || bill_address.same_as?(order.user.bill_address)
+      elsif bill_address.same_as?(order.user.bill_address)
         bill_address = order.user.bill_address
-      end
+      end      
     end
-    true
   end
   
   def clone_billing_address
-    shipment.address = bill_address.clone
+    ship_address = bill_address.clone
     true
   end
-
+  
   def complete_order
     order.complete!
     order.pay! if Spree::Config[:auto_capture]
@@ -106,11 +120,15 @@ class Checkout < ActiveRecord::Base
     # recalculate order totals
     order.save
   end
-           
+
   # list of countries available for checkout
   def self.countries   
     return Country.all unless zone = Zone.find_by_name(Spree::Config[:checkout_zone])
     zone.country_list
   end
 
+  def update_shipping_method_of_order_shipment
+    order.shipment.update_attribute(:shipping_method_id, shipping_method_id) if shipping_method
+  end
+  
 end
