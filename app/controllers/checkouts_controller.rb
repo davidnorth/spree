@@ -94,11 +94,11 @@ class CheckoutsController < Spree::BaseController
       # do not create these defaults if we're merely updating coupon code, otherwise we'll have a validation error
       if user = parent_object.user || current_user
         @object.ship_address ||= user.ship_address unless user.ship_address.nil?
-        @object.bill_address ||= user.bill_address.clone unless user.bill_address.nil?
+        @object.bill_address     ||= user.bill_address.clone unless user.bill_address.nil?
       end
       @object.ship_address ||= Address.default
-      @object.bill_address ||= Address.default
-      @object.creditcard ||= Creditcard.new(:month => Date.today.month, :year => Date.today.year)
+      @object.bill_address     ||= Address.default
+      @object.creditcard       ||= Creditcard.new(:month => Date.today.month, :year => Date.today.year)
     end
     @object
   end
