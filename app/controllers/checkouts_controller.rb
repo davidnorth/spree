@@ -96,7 +96,7 @@ class CheckoutsController < Spree::BaseController
         @object.shipment.address ||= user.ship_address.clone unless user.ship_address.nil?
         @object.bill_address     ||= user.bill_address.clone unless user.bill_address.nil?
       end
-      @object.shipment.address ||= Address.default
+      @object.ship_address ||= Address.default
       @object.bill_address     ||= Address.default
       @object.creditcard       ||= Creditcard.new(:month => Date.today.month, :year => Date.today.year)
     end
@@ -128,7 +128,7 @@ class CheckoutsController < Spree::BaseController
   
   def load_available_methods        
     @available_methods = rate_hash
-    @checkout.shipment.shipping_method_id ||= @available_methods.first[:id]
+    @checkout.shipping_method_id ||= @available_methods.first[:id]
   end
   
   def set_ip_address
@@ -140,8 +140,9 @@ class CheckoutsController < Spree::BaseController
   end
   
   def rate_hash
-    fake_shipment = Shipment.new :order => @order, :address => @order.ship_address
-    @order.shipping_methods.collect do |ship_method|
+    #fake_shipment = Shipment.new :order => @order, :address => @order.ship_address
+    fake_shipment = @checkout.shipment
+    @checkout.shipping_methods.collect do |ship_method|
       fake_shipment.shipping_method = ship_method
       { :id => ship_method.id,
         :name => ship_method.name,
