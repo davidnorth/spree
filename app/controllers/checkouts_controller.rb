@@ -93,12 +93,12 @@ class CheckoutsController < Spree::BaseController
     unless params[:checkout] and params[:checkout][:coupon_code]
       # do not create these defaults if we're merely updating coupon code, otherwise we'll have a validation error
       if user = parent_object.user || current_user
-        @object.shipment.address ||= user.ship_address.clone unless user.ship_address.nil?
-        @object.bill_address     ||= user.bill_address.clone unless user.bill_address.nil?
+        @object.ship_address ||= user.ship_address unless user.ship_address.nil?
+        @object.bill_address ||= user.bill_address.clone unless user.bill_address.nil?
       end
       @object.ship_address ||= Address.default
-      @object.bill_address     ||= Address.default
-      @object.creditcard       ||= Creditcard.new(:month => Date.today.month, :year => Date.today.year)
+      @object.bill_address ||= Address.default
+      @object.creditcard ||= Creditcard.new(:month => Date.today.month, :year => Date.today.year)
     end
     @object
   end
@@ -140,13 +140,11 @@ class CheckoutsController < Spree::BaseController
   end
   
   def rate_hash
-    #fake_shipment = Shipment.new :order => @order, :address => @order.ship_address
-    fake_shipment = @checkout.shipment
     @checkout.shipping_methods.collect do |ship_method|
-      fake_shipment.shipping_method = ship_method
+      @checkout.shipment.shipping_method = ship_method
       { :id => ship_method.id,
         :name => ship_method.name,
-        :rate => number_to_currency(ship_method.calculate_cost(fake_shipment)) }
+        :rate => number_to_currency(ship_method.calculate_cost(@checkout.shipment)) }
     end
   end
   
