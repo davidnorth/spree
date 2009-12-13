@@ -16,7 +16,7 @@ class ShipmentTest < ActiveSupport::TestCase
     context "when shipped" do    
       setup do
         @order = Factory(:order, :state => 'paid')
-        @shipment = @order.shipment
+        @shipment = @order.shipments.create
         @shipment.update_attribute(:state, 'acknowledged')
       end
       
