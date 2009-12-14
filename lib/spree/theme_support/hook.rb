@@ -51,6 +51,20 @@ module Spree
             end
           end
         end
+
+        # Take the content captured with a hook helper and modify with each of the listeners
+        def render_hook(hook_name, content, context)
+          listeners.each do |listener|
+            listener.modifiers_for_hook(hook_name).each do |hook_modifier|
+              content = hook_modifier.apply_to(content, context)
+            end
+          end
+          
+          
+          content
+        end
+
+
       end
 
       # Base class for hook listeners.
@@ -62,10 +76,18 @@ module Spree
       # Listeners that inherit this class will include various helpers by default.
       class ViewListener < Listener
         
+        @@hook_modifiers = []
+        
+        
         # Default to creating links using only the path.  Subclasses can
         # change this default as needed
         def self.default_url_options
           {:only_path => true }
+        end
+        
+        #
+        def modifiers_for_hook(hook_name)
+          @@hook_modifiers.select{|hm| hm.hook_name == hook_name}
         end
 
         # Helper method to directly render a partial using the context:
@@ -86,7 +108,79 @@ module Spree
           end
         end
 
+
+
+        
+        def self.replace(hook_name, options = {}, &block)
+          add_hook_modifier(hook_name, :replace, options, &block)
+        end
+
+        def self.insert_before(hook_name, options = {}, &block)
+          add_hook_modifier(hook_name, :insert_before, options, &block)
+        end
+
+        def self.insert_after(hook_name, options = {}, &block)
+          add_hook_modifier(hook_name, :insert_after, options, &block)
+        end
+
+        def self.remove(hook_name, options = {})
+          add_hook_modifier(hook_name, :replace)
+        end
+        
+        private
+        
+        def self.add_hook_modifier(hook_name, action, options = {}, &block)
+          if block
+            renderer = lambda do |template|
+              template.instance_eval(&block)
+            end
+          else
+            if options.empty?
+              renderer = nil
+            else
+              renderer = lambda do |template|
+                template.render(options)
+              end
+            end
+          end
+          @@hook_modifiers << HookModifier.new(hook_name, action, renderer)
+        end
+
+
+        # A hook modifier is created for each usage of 'insert_before','replace' etc.
+        # This stores how the original contents of the hook should be modified
+        # and does the work of altering the hooks content appropriately
+        class HookModifier
+          attr_accessor :hook_name
+          attr_accessor :action
+          attr_accessor :renderer
+
+          def initialize(hook_name, action, renderer = nil)
+            @hook_name = hook_name
+            @action = action
+            @renderer = renderer
+          end
+
+          def apply_to(content, context)
+            return '' if renderer.nil?
+            case action
+            when :insert_before
+              renderer.call(context) + content
+            when :insert_after
+              content + renderer.call(context)
+            when :replace
+              renderer.call(context)
+            else
+              ''
+            end
+          end
+
+        end
+
       end
+      
+      
+      
     end
   end
 end
