@@ -8,6 +8,7 @@ module Spree
       @@listener_classes = []
       @@listeners = nil
       @@hook_listeners = {}
+      @@hook_modifiers = {}
 
       class << self
         # Adds a listener class.
@@ -54,20 +55,12 @@ module Spree
 
         # Take the content captured with a hook helper and modify with each of the listeners
         def render_hook(hook_name, content, context)
-          puts ''
-          puts "render_hook #{hook_name}"
-          listeners.each do |listener|
-            puts " - #{listener.class}"
-            listener.modifiers_for_hook(hook_name).each do |hook_modifier|
-              puts " - - #{hook_modifier.action}"
-              content = hook_modifier.apply_to(content, context)
-            end
-          end
-          
-          
-          content
+          modifiers_for_hook(hook_name).inject(content) { |result, modifier| modifier.apply_to(result, context) }
         end
-
+        
+        def modifiers_for_hook(hook_name)
+          @@hook_modifiers[hook_name] ||= listeners.map {|l| l.modifiers_for_hook(hook_name)}.flatten
+        end
 
       end
 
