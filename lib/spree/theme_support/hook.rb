@@ -7,7 +7,6 @@ module Spree
 
       @@listener_classes = []
       @@listeners = nil
-      @@hook_listeners = {}
       @@hook_modifiers = {}
 
       class << self
@@ -24,11 +23,6 @@ module Spree
           @@listeners ||= @@listener_classes.collect {|listener| listener.instance}
         end
 
-        # Returns the listeners instances for the given hook.
-        def hook_listeners(hook)
-          @@hook_listeners[hook] ||= listeners.select {|listener| listener.respond_to?(hook)}
-        end
-
         # Clears all the listeners.
         def clear_listeners
           @@listener_classes = []
@@ -38,20 +32,9 @@ module Spree
         # Clears all the listeners instances.
         def clear_listeners_instances
           @@listeners = nil
-          @@hook_listeners = {}
+          @@hook_modifiers = {}
         end
 
-        # Calls a hook.
-        # Returns the listeners response.
-        def call_hook(hook, context={})
-          template = context[:controller].instance_variable_get('@template')
-          returning [] do |response|
-            hls = hook_listeners(hook)
-            if hls.any?
-              hls.each {|listener| response << listener.send(hook, template)}
-            end
-          end
-        end
 
         # Take the content captured with a hook helper and modify with each of the listeners
         def render_hook(hook_name, content, context)
