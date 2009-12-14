@@ -37,8 +37,6 @@ Cart (orders/edit.html.erb)
 Checkout (checkouts/edit.html.erb)
 ----------------------------------
 
-* checkout_singlepage_top (just below page title)
-* checkout_singlepage_bottom (after the cart form)
 
 Login (user_sessions/new.html.erb)
 ----------------------------------
@@ -55,9 +53,9 @@ Signup (users/new.html.erb, users/_form.html.erb)
 Account (users/show.html.erb)
 -----------------------------
 
-* account_top
-* account_above_my_orders
-* account_below_my_orders
+* account_summary
+* account_my_orders
+
 
 Admin Views
 ===========
@@ -65,15 +63,15 @@ Admin Views
 Layout (layouts/admin.html.erb)
 -------------------------------
 
-* admin_head (allow scripts etc. to be added to the head tab)
+* admin_inside_head
 
 Navigation
 ----------
 
-The following hooks allow list items to be added to various admin menus
+The following hooks allow list items to be added to various admin menus.
 
 * admin_tabs
 * admin_product_sub_tabs
-* admin_order_tabs (sidebar menu for individual order)
 * admin_product_tabs (sidebar menu for individual product)
+* admin_order_tabs (sidebar menu for individual order)
 
