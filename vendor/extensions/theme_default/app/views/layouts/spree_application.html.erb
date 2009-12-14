@@ -24,8 +24,9 @@ end
   <div id="wrapper" class="container"> 
     <% if @content_for_sidebar %>
     <div id="sidebar">
-      <%= yield :sidebar %>
-      <%= call_hook :sidebar_bottom %>
+      <% hook :sidebar do %>
+        <%= yield :sidebar %>
+      <% end %>
     </div>
     <% end %>
     

@@ -2,33 +2,14 @@ module Spree::ThemeSupport::HookHelper
   
   # Allow hooks to be used in views like this:
   # 
-  #   <%= call_hook(:some_hook) %>
-  #   <%= call_hook(:another_hook, :foo => 'bar' %>
-  # 
-  # Or in controllers like:
-  #   call_hook(:some_hook)
-  #   call_hook(:another_hook, :foo => 'bar')
-  # 
-  # Hooks added to views will be concatenated into a string.  Hooks added to
-  # controllers will return an array of results.
+  #   <%= hook :some_hook %>
   #
-  # Several objects are automatically added to the call context:
+  #   <% hook :some_hook do %>
+  #     <p>Some HTML</p>
+  #   <% end %>
   # 
-  # * request => Request instance
-  # * controller => current Controller instance
-  # 
-  def call_hook(hook, context={})
-    if is_a?(ActionController::Base)
-      default_context = {:controller => self, :request => request}
-      Spree::ThemeSupport::Hook.call_hook(hook, default_context.merge(context))
-    else
-      default_context = {:controller => controller, :request => request}
-      Spree::ThemeSupport::Hook.call_hook(hook, default_context.merge(context)).join(' ')
-    end        
-  end
-
   def hook(hook_name, &block)
-    content = capture(&block)
+    content = block ? capture(&block) : ''
     concat Spree::ThemeSupport::Hook.render_hook(hook_name, content, self)
   end
 
