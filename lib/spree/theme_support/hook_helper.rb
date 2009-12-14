@@ -27,8 +27,9 @@ module Spree::ThemeSupport::HookHelper
     end        
   end
 
-  def self.included(base)
-    base.helper_method :call_hook
+  def hook(hook_name, &block)
+    content = capture(&block)
+    concat Spree::ThemeSupport::Hook.render_hook(hook_name, content, self)
   end
 
 end
