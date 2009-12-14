@@ -9,8 +9,9 @@ module Spree::ThemeSupport::HookHelper
   #   <% end %>
   # 
   def hook(hook_name, &block)
-    content = block ? capture(&block) : ''
-    concat Spree::ThemeSupport::Hook.render_hook(hook_name, content, self)
+    content = block_given? ? capture(&block) : ''
+    result = Spree::ThemeSupport::Hook.render_hook(hook_name, content, self)
+    block_given? ? concat(result) : result
   end
 
 end
