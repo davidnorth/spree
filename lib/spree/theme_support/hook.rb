@@ -54,8 +54,12 @@ module Spree
 
         # Take the content captured with a hook helper and modify with each of the listeners
         def render_hook(hook_name, content, context)
+          puts ''
+          puts "render_hook #{hook_name}"
           listeners.each do |listener|
+            puts " - #{listener.class}"
             listener.modifiers_for_hook(hook_name).each do |hook_modifier|
+              puts " - - #{hook_modifier.action}"
               content = hook_modifier.apply_to(content, context)
             end
           end
@@ -67,50 +71,24 @@ module Spree
 
       end
 
-      # Base class for hook listeners.
-      class Listener
-        include Singleton
-      end
+
 
       # Listener class used for views hooks.
       # Listeners that inherit this class will include various helpers by default.
-      class ViewListener < Listener
-        
-        @@hook_modifiers = []
-        
-        
-        # Default to creating links using only the path.  Subclasses can
-        # change this default as needed
-        def self.default_url_options
-          {:only_path => true }
+      class ViewListener
+        include Singleton
+
+        attr_accessor :hook_modifiers
+
+        def initialize
+          @hook_modifiers = []
         end
-        
-        #
+
         def modifiers_for_hook(hook_name)
-          @@hook_modifiers.select{|hm| hm.hook_name == hook_name}
-        end
-
-        # Helper method to directly render a partial using the context:
-        # 
-        #   class MyHook < Spree::Hook::ViewListener
-        #     render_on :view_issues_show_details_bottom, :partial => "show_more_data" 
-        #   end
-        #
-        def self.render_on(hook, options={}, &blk)
-          if blk
-            define_method hook do |template|
-              template.instance_eval(&blk)
-            end
-          else
-            define_method hook do |template|
-              template.render(options)
-            end
-          end
+          hook_modifiers.select{|hm| hm.hook_name == hook_name}
         end
 
 
-
-        
         def self.replace(hook_name, options = {}, &block)
           add_hook_modifier(hook_name, :replace, options, &block)
         end
@@ -143,7 +121,7 @@ module Spree
               end
             end
           end
-          @@hook_modifiers << HookModifier.new(hook_name, action, renderer)
+          instance.hook_modifiers << HookModifier.new(hook_name, action, renderer)
         end
 
 
