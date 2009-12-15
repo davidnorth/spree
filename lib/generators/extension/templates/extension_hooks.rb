@@ -1,4 +1,4 @@
-class <%= class_name.gsub(/Extension$/, '') %>Hooks < Spree::ThemeSupport::Hook::ViewListener
+class <%= class_name.gsub(/Extension$/, '') %>Hooks < Spree::ThemeSupport::HookListener
 
   #
   # In this file you can modify the content of the hooks available in the default templates
