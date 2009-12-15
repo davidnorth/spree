@@ -26,6 +26,7 @@ View Product (products/show.html.erb products/_taxons.html.erb products/_cart_fo
 * product_properties
 * product_taxons ('Look for similar items')
 * product_price
+* product_cart_form
 * inside_product_cart_form
 
 Cart (orders/edit.html.erb)
