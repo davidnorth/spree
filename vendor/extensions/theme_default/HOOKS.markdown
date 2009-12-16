@@ -76,3 +76,8 @@ The following hooks allow list items to be added to various admin menus.
 * admin_product_tabs (sidebar menu for individual product)
 * admin_order_tabs (sidebar menu for individual order)
 * admin_configurations_menu (within table for Configurations menu)
+
+Forms
+-----
+
+* admin_inside_taxonomy_form
