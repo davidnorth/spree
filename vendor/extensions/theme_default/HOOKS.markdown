@@ -12,6 +12,11 @@ Homepage (products/index.html.erb)
 * homepage_sidebar_navigation
 * homepage_products
 
+Product search (products/index.html.erb)
+----------------------------------------
+
+* search_results
+
 Taxon (taxons/show.html.erb)
 ----------------------------
 
