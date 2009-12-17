@@ -7,7 +7,7 @@ module Admin::OrdersHelper
     end
   end
 
-  # Renders all the extension partials that may have been specified in the extensions
+  # Renders buttons for each state event permitted on the order
   def event_links
     links = []
     @order_events.sort.each do |event|

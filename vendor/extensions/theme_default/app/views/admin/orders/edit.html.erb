@@ -1,6 +1,8 @@
 <div class='toolbar order-links'>
-  <%= button_link_to t("resend"), resend_admin_order_url(@order), :method => :post, :icon => 'send-email' %>
-  <%= event_links %>
+  <% hook :admin_order_buttons do %>
+    <%= button_link_to t("resend"), resend_admin_order_url(@order), :method => :post, :icon => 'send-email' %>
+    <%= event_links %>
+  <% end %>
 </div>
 
 <%= render :partial => 'admin/shared/order_tabs', :locals => {:current => "Order Details"} %>

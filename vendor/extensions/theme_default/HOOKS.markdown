@@ -85,4 +85,5 @@ The following hooks allow list items to be added to various admin menus.
 Forms
 -----
 
+* admin_order_buttons
 * admin_inside_taxonomy_form
