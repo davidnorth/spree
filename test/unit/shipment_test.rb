@@ -13,6 +13,13 @@ class ShipmentTest < ActiveSupport::TestCase
       assert @shipment.ready_to_ship?
     end
 
+    should "log events" do
+      assert @shipment.state_events.empty?
+      @shipment.complete!
+      assert_equal 1, @shipment.state_events.count
+      assert_equal 'pending', @shipment.state_events.first.previous_state
+    end
+
     context "when shipped" do    
       setup do
         @order = Factory(:order, :state => 'paid')
