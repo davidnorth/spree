@@ -7,7 +7,12 @@ class CheckoutTest < ActiveSupport::TestCase
   should_not_allow_values_for :email, "blah", "b lah", "blah@blah"
   
   context Checkout do
-    setup { @checkout = Factory(:checkout) }
+    setup do
+      @checkout = Factory(:checkout)
+      @order = @checkout.order
+      @order.checkout = @checkout
+      @order.save
+    end
     context "in payment state w/no auto capture" do
       setup do 
         @checkout.state = "payment"
@@ -36,10 +41,13 @@ class CheckoutTest < ActiveSupport::TestCase
       setup do    
         @order = Factory(:order_with_totals)
         @checkout = Factory(:checkout, :order => @order, :state => "payment")
+        @order.checkout = @checkout
+        @order.save!
         Spree::Config.set(:auto_capture => true) 
       end
       context "next" do
         setup { @checkout.next! }
+
         should_change("@checkout.state", :to => "complete") { @checkout.state }
         should_change("@checkout.order.completed_at", :from => nil) { @checkout.order.completed_at }
         should_change("@checkout.order.state", :from => "in_progress", :to => "paid") { @checkout.order.state }        
