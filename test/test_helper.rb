@@ -54,8 +54,12 @@ def create_complete_order
 
   @shipping_method = Factory(:shipping_method)
   @checkout = @order.checkout
+  
+  @checkout.ship_address = Factory(:address)
+  @checkout.save
+  
   @shipment = @order.shipment
-  @shipment = @order.shipments.create(:shipping_method => @shipping_method, :address => Factory(:address))
+  @shipment = @order.shipments.create(:shipping_method => @shipping_method, :address => @checkout.ship_address)
 
   @order.completed_at = Time.now
   @checkout.bill_address = Factory(:address)
