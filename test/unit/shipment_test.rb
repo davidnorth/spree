@@ -9,13 +9,13 @@ class ShipmentTest < ActiveSupport::TestCase
     end
     
     should "change to ready_to_ship when completed" do
-      @shipment.complete!
+      @shipment.ready!
       assert @shipment.ready_to_ship?
     end
 
     should "log events" do
       assert @shipment.state_events.empty?
-      @shipment.complete!
+      @shipment.ready!
       assert_equal 1, @shipment.state_events.count
       assert_equal 'pending', @shipment.state_events.first.previous_state
     end
