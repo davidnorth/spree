@@ -64,6 +64,37 @@ class ShipmentTest < ActiveSupport::TestCase
       
     end
     
+    context "line_items" do
+      setup do
+        create_complete_order
+        @order.line_items.clear
+        @line_item1 = Factory(:line_item, :variant => Factory(:variant), :order => @order, :quantity => 2)
+        @line_item2 = Factory(:line_item, :variant => Factory(:variant), :order => @order, :quantity => 3)
+        @line_item3 = Factory(:line_item, :variant => Factory(:variant), :order => @order, :quantity => 4)
+        @order.reload
+        @order.complete
+        @shipment = @order.shipment
+      end
+      should "be the same as @order.line_items when there is only one shipment" do
+        assert_equal 3, @order.shipment.line_items.length
+      end
+      should "include only line items for each shipment when the order has multiple shipments" do
+        @new_shipment = @order.shipments.create(:shipping_method => @shipment.shipping_method, :address => @shipment.address)
+        
+        # move all inventory units for @line_item3 to the new shipment
+        inventory_units_to_move = @shipment.inventory_units.select{|iu| iu.variant == @line_item3.variant}
+        inventory_units_to_move.each {|iu| iu.update_attribute(:shipment, @new_shipment) }
+        @shipment.reload
+        
+        assert_equal 2, @shipment.line_items.length
+        assert @shipment.line_items.include?(@line_item1)
+        assert @shipment.line_items.include?(@line_item2)
+        
+        assert_equal 1, @new_shipment.line_items.length
+        assert @new_shipment.line_items.include?(@line_item3)
+      end
+    end
+    
   end
 
 end

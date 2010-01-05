@@ -55,6 +55,10 @@ class Shipment < ActiveRecord::Base
     end
   end
   
+  def line_items
+    order.line_items.select {|li| inventory_units.map(&:variant_id).include?(li.variant_id)}
+  end
+  
   private
 
   def generate_shipment_number
