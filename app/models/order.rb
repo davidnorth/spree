@@ -170,7 +170,7 @@ class Order < ActiveRecord::Base
 
   # convenience method since many stores will not allow user to create multiple shipments
   def shipment
-    shipments.last
+    @shipment ||= shipments.last
   end
 
   def contains?(variant)

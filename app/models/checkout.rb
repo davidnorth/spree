@@ -3,7 +3,7 @@ class Checkout < ActiveRecord::Base
 
   before_save :check_addresses_on_duplication
   after_save :process_coupon_code
-  after_update :update_order_shipment
+  after_save :update_order_shipment
   before_validation :clone_billing_address, :if => "@use_billing"
 
   belongs_to :order
@@ -78,19 +78,18 @@ class Checkout < ActiveRecord::Base
   private
 
   def check_addresses_on_duplication
-    if order.user
-      if order.shipment && order.shipment.address
-        if order.user.ship_address.nil?
-          order.user.update_attribute(:ship_address, order.shipment.address)
-        elsif order.shipment.address.same_as?(order.user.ship_address)
-          order.shipment.address = order.user.ship_address
-        end
+    if order.user      
+      if ship_address and order.user.ship_address.nil?
+        order.user.update_attribute(:ship_address, ship_address)
+      elsif order.user.ship_address and ship_address.nil?
+        self.ship_address = order.user.ship_address
       end
-      if order.user.bill_address.nil?
+        
+      if bill_address and order.user.bill_address.nil?
         order.user.update_attribute(:bill_address, bill_address)
-      elsif bill_address.same_as?(order.user.bill_address)
-        bill_address = order.user.bill_address
-      end      
+      elsif order.user.bill_address and bill_address.nil?
+        self.bill_address = order.user.ship_address
+      end
     end
   end
   
@@ -131,6 +130,7 @@ class Checkout < ActiveRecord::Base
     if order.shipment
       order.shipment.shipping_method = shipping_method
       order.shipment.address = ship_address
+      order.shipment.save
     end
   end
   
