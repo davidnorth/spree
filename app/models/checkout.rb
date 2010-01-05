@@ -28,10 +28,10 @@ class Checkout < ActiveRecord::Base
   validation_group :address, :fields=>["bill_address.firstname", "bill_address.lastname", "bill_address.phone",
                                        "bill_address.zipcode", "bill_address.state", "bill_address.lastname",
                                        "bill_address.address1", "bill_address.city", "bill_address.statename",
-                                       "bill_address.zipcode", "shipment.address.firstname", "shipment.address.lastname", "shipment.address.phone",
-                                       "shipment.address.zipcode", "shipment.address.state", "shipment.address.lastname",
-                                       "shipment.address.address1", "shipment.address.city", "shipment.address.statename",
-                                       "shipment.address.zipcode"]
+                                       "bill_address.zipcode", "ship_address.firstname", "ship_address.lastname", "ship_address.phone",
+                                       "ship_address.zipcode", "ship_address.state", "ship_address.lastname",
+                                       "ship_address.address1", "ship_address.city", "ship_address.statename",
+                                       "ship_address.zipcode"]
   validation_group :delivery, :fields => []
 
   def completed_at
@@ -95,7 +95,7 @@ class Checkout < ActiveRecord::Base
   end
   
   def clone_billing_address
-    ship_address = bill_address.clone
+    self.ship_address = bill_address.clone
     true
   end
   
