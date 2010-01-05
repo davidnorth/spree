@@ -56,16 +56,16 @@ def create_complete_order
   @checkout = @order.checkout
   
   @checkout.ship_address = Factory(:address)
+  @checkout.shipping_method = @shipping_method
   @checkout.save
   
   @shipment = @order.shipment
-  @shipment = @order.shipments.create(:shipping_method => @shipping_method, :address => @checkout.ship_address)
 
   @order.completed_at = Time.now
   @checkout.bill_address = Factory(:address)
 
   unless @zone.include?(@order.shipment.address)
-    ZoneMember.create(:zone => Zone.global, :zoneable => @order.shipment.address.country)
+    ZoneMember.create(:zone => Zone.global, :zoneable => @checkout.ship_address.country)
     @zone.reload
   end
 

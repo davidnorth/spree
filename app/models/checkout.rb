@@ -3,7 +3,7 @@ class Checkout < ActiveRecord::Base
 
   before_save :check_addresses_on_duplication
   after_save :process_coupon_code
-  after_save :update_shipping_method_of_order_shipment
+  after_update :update_order_shipment
   before_validation :clone_billing_address, :if => "@use_billing"
 
   belongs_to :order
@@ -127,8 +127,11 @@ class Checkout < ActiveRecord::Base
     zone.country_list
   end
 
-  def update_shipping_method_of_order_shipment
-    order.shipment.update_attribute(:shipping_method_id, shipping_method_id) if shipping_method
+  def update_order_shipment
+    if order.shipment
+      order.shipment.shipping_method = shipping_method
+      order.shipment.address = ship_address
+    end
   end
   
 end

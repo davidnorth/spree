@@ -68,7 +68,10 @@ class CheckoutTest < ActiveSupport::TestCase
         @checkout.shipping_method = @checkout.shipping_methods.first
         assert_nil @order.shipment.shipping_method
         @checkout.save
-        assert_equal @checkout.shipping_method, @order.shipment.shipping_method
+        assert_equal @checkout.shipping_method, @order.shipment.shipping_method, "default shipment shipping_method didn't match shipping_method of checkout"
+      end
+      should "update address of order's default shipment" do
+        assert_equal @checkout.ship_address, @order.shipment.address, "default shipment address didn't match ship address from checkout"
       end
     end
   end
