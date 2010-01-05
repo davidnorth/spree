@@ -1,3 +1,4 @@
+require 'ostruct'
 class Shipment < ActiveRecord::Base        
   belongs_to :order
   belongs_to :shipping_method
@@ -48,7 +49,12 @@ class Shipment < ActiveRecord::Base
     after_transition :to => 'shipped', :do => :transition_order
   end
   
-
+  def manifest
+    inventory_units.group_by(&:variant).map do |i|
+      OpenStruct.new(:variant => i.first, :quantity => i.last.length)
+    end
+  end
+  
   private
 
   def generate_shipment_number

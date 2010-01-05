@@ -38,6 +38,32 @@ class ShipmentTest < ActiveSupport::TestCase
         assert @shipment.shipped_at
       end
     end
+    
+    context "manifest" do
+      setup do
+        create_complete_order
+          
+        @order.line_items.clear
+        @variant1 = Factory(:variant)
+        @variant2 = Factory(:variant)
+        Factory(:line_item, :variant => @variant1, :order => @order, :quantity => 2)
+        Factory(:line_item, :variant => @variant2, :order => @order, :quantity => 3)
+        @order.reload
+
+        @shipment = @order.shipment        
+        @order.complete
+      end
+      
+      should "match the inventory units assigned" do
+        assert 2, @shipment.manifest.length
+        assert @shipment.manifest.map(&:variant).include?(@variant1)
+        assert @shipment.manifest.map(&:variant).include?(@variant2)
+        assert_equal 2, @shipment.manifest.detect{|i| i.variant == @variant1}.quantity
+        assert_equal 3, @shipment.manifest.detect{|i| i.variant == @variant2}.quantity
+      end
+      
+    end
+    
   end
 
 end
