@@ -5,7 +5,7 @@ class Shipment < ActiveRecord::Base
   has_one    :shipping_charge,   :as => :adjustment_source
   alias charge shipping_charge
   has_many :state_events, :as => :stateful
-
+  has_many :inventory_units
   before_create :generate_shipment_number
   after_save :create_shipping_charge
   
