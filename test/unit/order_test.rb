@@ -86,6 +86,7 @@ class OrderTest < ActiveSupport::TestCase
     
     context "pay!" do
       should "make all shipments ready" do
+        @order.complete!
         @order.pay!
         assert @order.shipments.all?(&:ready_to_ship?), "shipments didn't all have state ready_to_ship"
       end
@@ -96,6 +97,15 @@ class OrderTest < ActiveSupport::TestCase
         @order.update_attribute(:state, 'paid')
         @order.ship!
         assert @order.shipments.all?(&:shipped?), "shipments didn't all have state shipped"
+      end
+    end
+
+    context "under_paid!" do
+      should "make all shipments pending" do
+        @order.complete!
+        @order.pay!
+        @order.under_paid!
+        assert @order.shipments.all?(&:pending?), "shipments didn't all have state pending"
       end
     end
     

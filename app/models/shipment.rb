@@ -33,6 +33,9 @@ class Shipment < ActiveRecord::Base
     event :ready do
       transition :from => 'pending', :to => 'ready_to_ship'
     end
+    event :pend do
+      transition :from => 'ready_to_ship', :to => 'pending'
+    end
     event :transmit do
       transition :from => 'ready_to_ship', :to => 'transmitted'
     end
