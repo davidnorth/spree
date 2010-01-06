@@ -24,7 +24,7 @@ class ShipmentTest < ActiveSupport::TestCase
       setup do
         @order = Factory(:order, :state => 'paid')
         @shipment = @order.shipment
-        @shipment.update_attribute(:state, 'acknowledged')
+        @shipment.update_attribute(:state, 'ready_to_ship')
       end
       
       should "make order shipped when this is the only shipment" do
