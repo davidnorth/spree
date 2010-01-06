@@ -33,17 +33,8 @@ class Shipment < ActiveRecord::Base
     event :ready do
       transition :from => 'pending', :to => 'ready_to_ship'
     end
-    event :transmit do
-      transition :from => 'ready_to_ship', :to => 'transmitted'
-    end
-    event :acknowledge do
-      transition :from => 'transmitted', :to => 'acknowledged'
-    end
-    event :reject do
-      transition :from => 'acknowledged', :to => 'unable_to_ship'
-    end
     event :ship do
-      transition :from => 'acknowledged', :to => 'shipped'
+      transition :from => 'ready_to_ship', :to => 'shipped'
     end
 
     after_transition :to => 'shipped', :do => :transition_order

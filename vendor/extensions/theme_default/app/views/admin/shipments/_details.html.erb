@@ -1,4 +1,4 @@
-<h2><%= t('shipment') %> #<%= @shipment.number%> (<%= @shipment.state %>)</h2>
+<h2><%= t('shipment') %> #<%= @shipment.number%> (<%= @shipment.state.to_s.humanize %>)</h2>
 
 <table class="index" style="width:100%;">
   <tr>
