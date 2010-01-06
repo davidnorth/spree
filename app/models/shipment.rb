@@ -27,6 +27,10 @@ class Shipment < ActiveRecord::Base
         })
     end
   end
+  
+  def cost
+    shipping_charge.amount if shipping_charge
+  end
 
   # shipment state machine (see http://github.com/pluginaweek/state_machine/tree/master for details)
   state_machine :initial => 'pending' do
