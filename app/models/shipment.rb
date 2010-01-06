@@ -22,7 +22,7 @@ class Shipment < ActiveRecord::Base
     if shipping_method
       self.shipping_charge ||= ShippingCharge.create({
           :order => order,
-          :description => "#{I18n.t(:shipping)} (#{shipping_method.name})",
+          :description => description_for_shipping_charge,
           :adjustment_source => self,
         })
     end
@@ -63,6 +63,16 @@ class Shipment < ActiveRecord::Base
     end
   end
   
+  def recalculate_needed?
+    changed? or !address.same_as?(Address.find(address.id))
+  end
+  
+  def recalculate_order
+    shipping_charge.update_attribute(:description, description_for_shipping_charge)
+    order.update_adjustments
+    order.save
+  end
+  
   private
 
   def generate_shipment_number
@@ -72,6 +82,10 @@ class Shipment < ActiveRecord::Base
       record = Shipment.find(:first, :conditions => ["number = ?", random])
     end
     self.number = random
+  end
+  
+  def description_for_shipping_charge
+    "#{I18n.t(:shipping)} (#{shipping_method.name})"
   end
   
   def transition_order

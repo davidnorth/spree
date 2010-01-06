@@ -48,6 +48,7 @@ class Admin::ShipmentsController < Admin::BaseController
       @order.checkout.special_instructions = object_params[:special_instructions]
       @order.save
     end
+    @shipment.recalculate_order if params[:recalculate]
   end
 
 end
