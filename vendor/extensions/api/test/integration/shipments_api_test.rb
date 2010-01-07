@@ -33,9 +33,13 @@ class ShipmentsApiTest < ActionController::IntegrationTest
       context "with valid attributes" do
         setup do
           @shipment = Factory(:shipment)
-          put_with_key "/api/shipments/#{@shipment.id}", {}
+          put_with_key "/api/shipments/#{@shipment.id}", {:shipment => {:tracking => 'tracking-code'}}
         end
         should_respond_with :success
+        should "update the tracking code" do
+          @shipment.reload
+          assert_equal 'tracking-code', @shipment.tracking
+        end
       end
       context "with invalid attributes" do
         setup do
