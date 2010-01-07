@@ -13,7 +13,6 @@ class ApiExtension < Spree::Extension
   # end
   
   def activate
-
     User.class_eval do
 
       def clear_api_key!
@@ -28,6 +27,23 @@ class ApiExtension < Spree::Extension
       
       def secure_digest(*args)
         Digest::SHA1.hexdigest(args.flatten.join('--'))
+      end
+
+    end
+
+    Admin::UsersController.class_eval do
+      
+      def generate_api_key
+        if object.generate_api_key!
+          flash[:notice] = t('api.key_generated')
+        end
+        redirect_to edit_object_path
+      end
+      def clear_api_key
+        if object.clear_api_key!
+          flash[:notice] = t('api.key_cleared')
+        end
+        redirect_to edit_object_path
       end
 
     end

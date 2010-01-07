@@ -1,0 +1,11 @@
+en-US:
+  api: "API"
+  api:
+    access: "API Access"
+    clear_key: "Clear API key"
+    generate_key: "Generate API key"
+    key: "API Key"
+    regenerate_key: "Regenerate API key"
+    no_key: "No key defined"
+    key_generated: "API key generated"
+    key_cleared: "API key cleared"
