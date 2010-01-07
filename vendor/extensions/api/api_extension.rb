@@ -47,6 +47,21 @@ class ApiExtension < Spree::Extension
       end
 
     end
+
+    Spree::BaseController.class_eval do
+      private  
+      def current_user
+        return @current_user if defined?(@current_user)
+        if current_user_session && current_user_session.user
+          @current_user = current_user_session.user
+        end
+        if params[:api_key]
+          @current_user = User.find_by_api_key(params[:api_key])
+        end
+      end
+    end
     
   end
 end
+
+

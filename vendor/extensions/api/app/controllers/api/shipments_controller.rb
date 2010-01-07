@@ -1,4 +1,4 @@
-class Api::ShipmentsController < Spree::BaseController
+class Api::ShipmentsController < Api::BaseController
   resource_controller
   actions :index, :show
   
