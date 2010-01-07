@@ -12,3 +12,29 @@ unless defined? SPREE_ROOT
   end
 end
 require "#{SPREE_ROOT}/test/test_helper"
+
+
+module ApiIntegrationHelper
+
+  def setup_user
+    @user = Factory(:admin_user)
+    @user.generate_api_key!
+  end
+  def valid_headers
+    {'X-SpreeAPIKey' => @user.api_key}
+  end
+
+  def get_with_key(path, params = nil)
+    get path, params, valid_headers
+  end
+  def post_with_key(path, params = nil)
+    post path, params, valid_headers
+  end
+  def put_with_key(path, params = nil)
+    put path, params, valid_headers
+  end
+  def delete_with_key(path, params = nil)
+    delete path, params, valid_headers
+  end
+
+end
