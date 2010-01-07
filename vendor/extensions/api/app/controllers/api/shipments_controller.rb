@@ -15,7 +15,7 @@ class Api::ShipmentsController < Api::BaseController
     wants.json { render :nothing => true }
     failure.wants.json { render :json => object.errors.to_json, :status => 422 }
   end
-  
+
 
   private
 

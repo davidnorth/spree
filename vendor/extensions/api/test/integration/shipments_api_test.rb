@@ -50,6 +50,33 @@ class ShipmentsApiTest < ActionController::IntegrationTest
       end
     end
 
+    context "event" do
+      setup do
+        @shipment = Factory(:shipment)
+      end
+      context "with event valid for the shipment" do
+        setup { put_with_key "/api/shipments/#{@shipment.id}/event?e=ready" }
+        should_respond_with :success
+        should "update the state" do
+          @shipment.reload
+          assert @shipment.ready_to_ship?, "shipment wasn't updated to ready_to_ship"
+        end
+      end
+      context "with no event name" do
+        setup { put_with_key "/api/shipments/#{@shipment.id}/event?e=" }
+        should_respond_with 422
+      end
+      context "with an invalid event name" do
+        setup { put_with_key "/api/shipments/#{@shipment.id}/event?e=foo" }
+        should_respond_with 422
+      end
+      context "with an valid event that isn't allowed on this object" do
+        setup { put_with_key "/api/shipments/#{@shipment.id}/event?e=ship" }
+        should_respond_with 422
+      end
+    end
+
+
   end
 
 end
