@@ -26,7 +26,6 @@ class Api::BaseController < Spree::BaseController
         if errors.blank?
           render :nothing => true
         else
-          puts errors
           render :json => errors.to_json, :status => 422
         end
       end

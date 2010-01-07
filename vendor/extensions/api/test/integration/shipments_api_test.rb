@@ -65,14 +65,23 @@ class ShipmentsApiTest < ActionController::IntegrationTest
       context "with no event name" do
         setup { put_with_key "/api/shipments/#{@shipment.id}/event?e=" }
         should_respond_with 422
+        should "have relevant error" do
+          assert response.body.include?(I18n.translate('api.errors.missing_event'))
+        end
       end
       context "with an invalid event name" do
         setup { put_with_key "/api/shipments/#{@shipment.id}/event?e=foo" }
         should_respond_with 422
+        should "have relevant error" do
+          assert response.body.include?(I18n.translate('api.errors.invalid_event', :events => ''))
+        end
       end
       context "with an valid event that isn't allowed on this object" do
         setup { put_with_key "/api/shipments/#{@shipment.id}/event?e=ship" }
         should_respond_with 422
+        should "have relevant error" do
+          assert response.body.include?(I18n.translate('api.errors.invalid_event_for_object', :events => ''))
+        end
       end
     end
 
