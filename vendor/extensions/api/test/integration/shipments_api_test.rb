@@ -35,7 +35,14 @@ class ShipmentsApiTest < ActionController::IntegrationTest
           @shipment = Factory(:shipment)
           put_with_key "/api/shipments/#{@shipment.id}", {}
         end
-        #should_respond_with 200
+        should_respond_with :success
+      end
+      context "with invalid attributes" do
+        setup do
+          @shipment = Factory(:shipment)
+          put_with_key "/api/shipments/#{@shipment.id}", {:shipment => {:address_attributes => {:firstname => ''}}}
+        end
+        should_respond_with 422
       end
     end
 

@@ -21,7 +21,7 @@ module ApiIntegrationHelper
     @user.generate_api_key!
   end
   def valid_headers
-    {'X-SpreeAPIKey' => @user.api_key}
+    {'X-SpreeAPIKey' => @user.api_key, 'Accept' => 'application/json'}
   end
 
   def get_with_key(path, params = nil)
