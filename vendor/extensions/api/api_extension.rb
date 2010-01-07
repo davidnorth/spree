@@ -55,8 +55,8 @@ class ApiExtension < Spree::Extension
         if current_user_session && current_user_session.user
           @current_user = current_user_session.user
         end
-        if params[:api_key]
-          @current_user = User.find_by_api_key(params[:api_key])
+        if token = request.headers['X-SpreeAPIKey']
+          @current_user = User.find_by_api_key(token)
         end
       end
     end
