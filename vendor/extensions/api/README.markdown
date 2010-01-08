@@ -2,19 +2,19 @@ Spree API
 =========
 Manage orders,shipments etc. with a simple REST API
 
+
 General Usage
 =============
 
-Making requests
---------------
+## Making requests
 
 You will need an api key to authenticate. These can be generated on the user edit screen within the admin interface.
 Your requests should include this key in the X-SpreeAPIKey header e.g.
 
-curl -H "Content-Type:application/json" -H "Accept:application/json" -H "X-SpreeAPIKey: YOUR_KEY" http://example.com/api/orders
+    curl -H "Content-Type:application/json" -H "Accept:application/json" -H "X-SpreeAPIKey: YOUR_KEY" http://example.com/api/orders
 
-HTTP Methods
-------------
+## HTTP Methods
+
 Your requests must use the correct HTTP method.
 
 * GET for listing and viewing individual records
@@ -22,8 +22,7 @@ Your requests must use the correct HTTP method.
 * PUT for updating existing records
 * DELETE for deleting records
 
-Searching
-=========
+## Searching
 
 All list actions support filtering using search logic parameters. 
 For example, to view all shipments that are ready to ship and that were created since the date 2009-01-01:
@@ -32,40 +31,121 @@ For example, to view all shipments that are ready to ship and that were created 
 
 For more details, see http://github.com/binarylogic/searchlogic
 
+## Creating and updating resources
+
+Parameters should be supplied in the request body as a JSON encoded hash of attributes.
+
+Sucessfully creating a resource will result in a 201 (Created) response code while updating will result in 200 (OK).
+If creating or updating a resource fails the result will be a 422 (Unprocessable Entity) response and a list of errors e.g.
+
+    {"errors": ["First Name can't be blank","Last Name can't be blank"}
+
+
+
 Orders
 ======
 
-List orders
------------
+## List orders - GET /api/orders
 
-GET /api/orders
+### Response
 
-View order
------------
+    [
+      { order: { ... } },
+      { order: { ... } },
+      ...
+    ]
 
-GET /api/orders/{order_id}
 
-View shipments for an order
----------------------------
+## View order - GET /api/orders/{order_id}
 
-GET /api/orders/{order_id}/shipments
+### Response
 
-Create a shipment for an order
-------------------------------
+    {
+      order: {
+        ...
+      }
+    }
 
-POST /api/orders/{order_id}/shipments
+## Line items for an order - GET /api/orders/{order_id}/line_items
 
+### Response
+
+    [
+      { line_item: { ... } },
+      { line_item: { ... } },
+      ...
+    ]
+
+
+## Create a line item on an order - POST /api/orders/{order_id}/line_items
+
+### Request
+
+    ...
+
+### Response
+
+    HTTP Status: 201 Created
+    Location: http://example.com/api/orders/{order_id}/line_items/{new_line_item_id}
+
+## Update a line item - PUT /api/orders/{order_id}/line_items/{line_item_id}
+
+### Request
+
+    ...
+
+### Response
+
+    HTTP Status: 200 OK
+
+## Shipments for an order - GET /api/orders/{order_id}/shipments
+
+### Response
+
+    [
+      { shipment: { ... } },
+      { shipment: { ... } },
+      ...
+    ]
+
+## Create a shipment for an order - POST /api/orders/{order_id}/shipments
+
+### Request
+
+    ...
+
+### Response
+
+    HTTP Status: 201 Created
+    Location: http://example.com/api/orders/{order_id}/shipments/{new_shipment_id}
 
 Shipments
 =========
 
-List shipments
---------------
+## List shipments - GET /api/shipments
 
-GET /api/shipments
+### Response
 
-View shipment
--------------
+    [
+      { shipment: { ... } },
+      { shipment: { ... } },
+      ...
+    ]
 
-GET /api/shipments/{shipment_id_}
+## View shipment - GET /api/shipments/{shipment_id}
 
+### Response
+
+    {
+      shipment: { ... }
+    }
+
+## Update shipment - PUT /api/shipments/{shipment_id}
+
+### Request
+
+    ...
+
+### Response
+
+    HTTP Status: 200 OK
