@@ -1,7 +1,8 @@
 class Api::ShipmentsController < Api::BaseController
   resource_controller_for_api
   actions :index, :show, :update
-  
+  belongs_to :order
+
   private
 
     def collection_serialization_options

@@ -18,7 +18,7 @@ class Api::BaseController < Spree::BaseController
     end
 
     define_method :end_of_association_chain do
-      model.scoped(:include  => eager_load_associations)
+      (parent? ? parent_association : model).scoped(:include  => eager_load_associations)
     end
 
     define_method :collection do
