@@ -5,7 +5,11 @@ class Api::OrdersController < Api::BaseController
   private
 
     def object_serialization_options
-      { :include => [:shipments, :line_items] }
+      { :include => {
+          :shipments => {:include => [:shipping_method]}, 
+          :line_items => {:include => :variant}
+          } 
+      }
     end
 
 end

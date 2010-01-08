@@ -26,16 +26,36 @@ class OrdersApiTest < ActionController::IntegrationTest
     end
     
     context "shipments" do
-      setup do
-        get_with_key "/api/orders/#{@order.id}/shipments"
+      context "list" do
+        setup do
+          get_with_key "/api/orders/#{@order.id}/shipments"
+        end
+        should_respond_with :success
+        should_assign_to :order
+        should "only be 1 shipment" do
+          assert_equal 1, assigns(:shipments).length
+        end
+        should "be the shipment that belongs to this order" do
+          assert_equal @order, assigns(:shipments).first.order
+        end
       end
-      should_respond_with :success
-      should_assign_to :order
-      should "only be 1 shipment" do
-        assert_equal 1, assigns(:shipments).length
-      end
-      should "be the shipment that belongs to this order" do
-        assert_equal @order, assigns(:shipments).first.order
+      context "create" do
+        setup do          
+          @attributes = {
+            :shipment => {
+              :shipping_method_id => @order.shipment.shipping_method_id,
+              :tracking => 'tracking-code',
+              :address_attributes => Factory.attributes_for(:address, :country => nil, :country_id => Factory(:country).id)
+              }
+            }
+          post_with_key "/api/orders/#{@order.id}/shipments", @attributes.to_json
+        end
+        should_respond_with 201
+        should_assign_to :shipment
+        should "have correct attributes" do
+          assert_equal 'tracking-code', assigns(:shipment).tracking
+          assert_equal @attributes[:shipment][:address_attributes][:firstname], assigns(:shipment).address.firstname
+        end
       end
     end
   

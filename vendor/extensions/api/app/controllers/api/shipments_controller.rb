@@ -1,6 +1,6 @@
 class Api::ShipmentsController < Api::BaseController
   resource_controller_for_api
-  actions :index, :show, :update
+  actions :index, :show, :update, :create
   belongs_to :order
 
   private

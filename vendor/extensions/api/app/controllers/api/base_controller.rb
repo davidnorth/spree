@@ -12,6 +12,11 @@ class Api::BaseController < Spree::BaseController
       wants.json { render :json => object.to_json(object_serialization_options) }
     end
 
+    create do
+      wants.json { render :nothing => true, :status => 201 }
+      failure.wants.json { render :json => object.errors.to_json, :status => 422 }
+    end
+
     update do
       wants.json { render :nothing => true }
       failure.wants.json { render :json => object.errors.to_json, :status => 422 }
