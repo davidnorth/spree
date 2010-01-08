@@ -1,6 +1,31 @@
 class Api::BaseController < Spree::BaseController
   require_role 'admin'
 
+  def self.resource_controller_for_api
+    resource_controller
+
+    index.response do |wants|
+      wants.json { render :json => collection.to_json(collection_serialization_options) }
+    end
+
+    show.response do |wants|
+      wants.json { render :json => object.to_json(object_serialization_options) }
+    end
+
+    update do
+      wants.json { render :nothing => true }
+      failure.wants.json { render :json => object.errors.to_json, :status => 422 }
+    end
+
+    define_method :end_of_association_chain do
+      model.scoped(:include  => eager_load_associations)
+    end
+
+    define_method :collection do
+      @collection = search.all(:limit => 100)
+    end
+  end
+
   def access_denied
     render :text => 'access_denied', :status => 401
   end
@@ -32,5 +57,25 @@ class Api::BaseController < Spree::BaseController
     end
   end
 
-end
+  protected
 
+    def search
+      return @search unless @search.nil?
+      @search = end_of_association_chain.searchlogic(params[:search])
+      @search.order ||= "descend_by_created_at"
+      @search
+    end
+  
+    def collection_serialization_options
+      {}
+    end
+
+    def object_serialization_options
+      {}
+    end
+  
+    def eager_load_associations
+      nil
+    end
+  
+end
