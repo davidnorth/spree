@@ -14,12 +14,12 @@ class Api::BaseController < Spree::BaseController
 
     create do
       wants.json { render :nothing => true, :status => 201 }
-      failure.wants.json { render :json => object.errors.to_json, :status => 422 }
+      failure.wants.json { render :json => object_errors.to_json, :status => 422 }
     end
 
     update do
       wants.json { render :nothing => true }
-      failure.wants.json { render :json => object.errors.to_json, :status => 422 }
+      failure.wants.json { render :json => object_errors.to_json, :status => 422 }
     end
 
     define_method :end_of_association_chain do
@@ -81,6 +81,10 @@ class Api::BaseController < Spree::BaseController
   
     def eager_load_associations
       nil
+    end
+    
+    def object_errors
+      {:errors => object.errors.full_messages}
     end
   
 end

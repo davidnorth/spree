@@ -47,6 +47,11 @@ class ShipmentsApiTest < ActionController::IntegrationTest
           put_with_key "/api/shipments/#{@shipment.id}", {:shipment => {:address_attributes => {:firstname => ''}}}.to_json
         end
         should_respond_with 422
+        should "respond with relevant error messages" do
+          json_response = ActiveSupport::JSON.decode(response.body)
+          assert json_response.is_a?(Hash), "response wasn't a json string"
+          assert json_response.has_key?('errors')
+        end
       end
     end
 
