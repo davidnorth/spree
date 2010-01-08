@@ -33,7 +33,7 @@ class ShipmentsApiTest < ActionController::IntegrationTest
       context "with valid attributes" do
         setup do
           @shipment = Factory(:shipment)
-          put_with_key "/api/shipments/#{@shipment.id}", {:shipment => {:tracking => 'tracking-code'}}
+          put_with_key "/api/shipments/#{@shipment.id}", {:shipment => {:tracking => 'tracking-code'}}.to_json
         end
         should_respond_with :success
         should "update the tracking code" do
@@ -44,7 +44,7 @@ class ShipmentsApiTest < ActionController::IntegrationTest
       context "with invalid attributes" do
         setup do
           @shipment = Factory(:shipment)
-          put_with_key "/api/shipments/#{@shipment.id}", {:shipment => {:address_attributes => {:firstname => ''}}}
+          put_with_key "/api/shipments/#{@shipment.id}", {:shipment => {:address_attributes => {:firstname => ''}}}.to_json
         end
         should_respond_with 422
       end

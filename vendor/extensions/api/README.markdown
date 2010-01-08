@@ -11,8 +11,7 @@ Making requests
 You will need an api key to authenticate. These can be generated on the user edit screen within the admin interface.
 Your requests should include this key in the X-SpreeAPIKey header e.g.
 
-curl -H "X-SpreeAPIKey: YOUR_KEY" http://example.com/api/orders
-
+curl -H "Content-Type:application/json" -H "Accept:application/json" -H "X-SpreeAPIKey: YOUR_KEY" http://example.com/api/orders
 
 HTTP Methods
 ------------
