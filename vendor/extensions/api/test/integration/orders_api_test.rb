@@ -7,6 +7,10 @@ class OrdersApiTest < ActionController::IntegrationTest
     setup do
       setup_user
       @order = Factory(:order)
+      5.times do
+        Factory(:line_item, :order => @order, :quantity => 1)
+      end
+      @order.reload
     end
 
     context "index" do
@@ -24,7 +28,7 @@ class OrdersApiTest < ActionController::IntegrationTest
       end
       should_respond_with :success
     end
-    
+
     context "shipments" do
       context "list" do
         setup do
@@ -55,6 +59,45 @@ class OrdersApiTest < ActionController::IntegrationTest
         should "have correct attributes" do
           assert_equal 'tracking-code', assigns(:shipment).tracking
           assert_equal @attributes[:shipment][:address_attributes][:firstname], assigns(:shipment).address.firstname
+        end
+      end
+    end
+    
+    context "line_items" do
+      context "list" do
+        setup do
+          get_with_key "/api/orders/#{@order.id}/line_items"
+        end
+        should_respond_with 200
+        should "be 5 of them" do
+          assert_equal 5, assigns(:line_items).length
+        end
+      end
+      context "create" do
+        setup do
+          @variant = Factory(:variant)
+          @line_item = @order.line_items.first
+          @attributes = {:line_item => {:quantity => 2, :variant_id => @variant.id}}
+          post_with_key "/api/orders/#{@order.id}/line_items", @attributes.to_json
+        end
+        should_respond_with 201
+        should_assign_to :line_item
+        should "have correct attributes" do
+          assert_equal @variant, assigns(:line_item).variant
+          assert_equal 2, assigns(:line_item).quantity
+        end
+      end
+      context "update" do
+        setup do
+          @line_item = @order.line_items.first
+          @attributes = {
+            :line_item => {:quantity => 4}
+          }
+          put_with_key "/api/orders/#{@order.id}/line_items/#{@line_item.id}", @attributes.to_json
+        end
+        should_respond_with 200
+        should "have correct attributes" do
+          assert_equal 4, assigns(:line_item).quantity
         end
       end
     end

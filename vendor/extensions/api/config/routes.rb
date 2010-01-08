@@ -5,5 +5,6 @@ map.namespace :api do |api|
   api.resources :shipments, :member => {:event => :put}
   api.resources :orders, :member => {:event => :put} do |orders|
     orders.resources :shipments
+    orders.resources :line_items
   end
 end
