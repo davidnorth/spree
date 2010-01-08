@@ -18,6 +18,7 @@ class ShipmentsApiTest < ActionController::IntegrationTest
           get_with_key '/api/shipments'
         end
         should_respond_with :success
+        should_respond_with_content_type("application/json")
       end
     end
 

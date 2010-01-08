@@ -55,7 +55,9 @@ class OrdersApiTest < ActionController::IntegrationTest
           post_with_key "/api/orders/#{@order.id}/shipments", @attributes.to_json
         end
         should_respond_with 201
+        should_set_location_header { api_order_shipment_url(@order, assigns(:shipment)) }
         should_assign_to :shipment
+
         should "have correct attributes" do
           assert_equal 'tracking-code', assigns(:shipment).tracking
           assert_equal @attributes[:shipment][:address_attributes][:firstname], assigns(:shipment).address.firstname
@@ -81,7 +83,9 @@ class OrdersApiTest < ActionController::IntegrationTest
           post_with_key "/api/orders/#{@order.id}/line_items", @attributes.to_json
         end
         should_respond_with 201
+        should_set_location_header { api_order_line_item_url(@order, assigns(:line_item)) }
         should_assign_to :line_item
+
         should "have correct attributes" do
           assert_equal @variant, assigns(:line_item).variant
           assert_equal 2, assigns(:line_item).quantity

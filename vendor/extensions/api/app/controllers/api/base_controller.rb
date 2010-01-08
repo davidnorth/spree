@@ -13,7 +13,7 @@ class Api::BaseController < Spree::BaseController
     end
 
     create do
-      wants.json { render :nothing => true, :status => 201 }
+      wants.json { redirect_to object_url, :status => 201 }
       failure.wants.json { render :json => object_errors.to_json, :status => 422 }
     end
 

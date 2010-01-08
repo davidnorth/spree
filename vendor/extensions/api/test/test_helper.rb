@@ -38,3 +38,16 @@ module ApiIntegrationHelper
   end
 
 end
+
+
+class Test::Unit::TestCase
+
+  def self.should_set_location_header(&block)
+    should "Set the Location header" do
+      expected_url = instance_eval(&block)
+      assert_equal expected_url, response.headers['Location'], "wasn't set to '#{expected_url}'"
+    end
+  end
+
+end
+
