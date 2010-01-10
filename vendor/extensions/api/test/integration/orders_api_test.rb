@@ -105,7 +105,20 @@ class OrdersApiTest < ActionController::IntegrationTest
         end
       end
     end
-  
+
+    context "event" do
+      setup do
+      end
+      context "with event valid for the shipment" do
+        setup { put_with_key "/api/orders/#{@order.id}/event?e=complete" }
+        should_respond_with :success
+        should "update the state" do
+          @order.reload
+          assert @order.new?, "order wasn't updated to new"
+        end
+      end
+    end
+      
   end
 
 end
