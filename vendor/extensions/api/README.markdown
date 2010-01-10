@@ -119,6 +119,17 @@ Orders
     HTTP Status: 201 Created
     Location: http://example.com/api/orders/{order_id}/shipments/{new_shipment_id}
 
+## Fire state event - PUT /api/orders/{order_id}/event?e={event_name}
+
+### Response (success)
+
+    HTTP Status: 200 OK
+
+### Response (Failure)
+
+    HTTP Status: 422
+
+
 Shipments
 =========
 
@@ -149,3 +160,15 @@ Shipments
 ### Response
 
     HTTP Status: 200 OK
+
+## Fire state event - PUT /api/shipments/{shipment_id}/event?e={shipment_id}
+
+### Response (success)
+
+    HTTP Status: 200 OK
+
+### Response (Failure)
+
+    HTTP Status: 422
+
+
