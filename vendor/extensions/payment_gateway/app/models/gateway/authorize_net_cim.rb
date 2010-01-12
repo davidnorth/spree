@@ -23,24 +23,10 @@ class Gateway::AuthorizeNetCim < Gateway
   def purchase(amount, creditcard, gateway_options)
     create_transaction(amount, creditcard, :auth_capture)
   end
-  
-  # TODO - how to handle capture if creditcard isn't being supplied
-  # Get the approval code from authorize response:
-  #  approval_code = response.params['direct_response']['approval_code']
-  # 
-  # Use in transaction hash:
-  #
-  # :transaction => {
-  #  :customer_profile_id => @customer_profile_id,
-  #  :customer_payment_profile_id => @customer_payment_profile_id,
-  #  :type => :capture_only,
-  #  :amount => @amount,
-  #  :approval_code => approval_code
-  # }
-  #
-  #def capture(amount, authorization, gateway_options)
-  #  create_transaction(amount, creditcard, :capture_only)
-  #end
+
+  def capture(authorization, creditcard, gateway_options)
+    create_transaction((authorization.amount * 100).to_i, creditcard, :capture_only, :approval_code => authorization.response_code)
+  end
   
 	def payment_profiles_supported?
 	  true
@@ -51,7 +37,7 @@ class Gateway::AuthorizeNetCim < Gateway
     # Create a transaction on a creditcard
     # Set up a CIM profile for the card if one doesn't exist
     # Valid transaction_types are :auth_only, :capture_only and :auth_capture
-    def create_transaction(amount, creditcard, transaction_type)
+    def create_transaction(amount, creditcard, transaction_type, options = {})
       if creditcard.gateway_customer_profile_id.nil?
         profile_hash = create_customer_profile(creditcard, creditcard.gateway_options)
         creditcard.update_attributes!(:gateway_customer_profile_id => profile_hash[:customer_profile_id], :gateway_payment_profile_id => profile_hash[:customer_payment_profile_id])
@@ -62,7 +48,8 @@ class Gateway::AuthorizeNetCim < Gateway
         :amount => amount,
         :customer_profile_id => creditcard.gateway_customer_profile_id,
         :customer_payment_profile_id => creditcard.gateway_payment_profile_id,
-      }
+      }.update(options)
+      puts transaction_options.inspect
       cim_gateway.create_customer_profile_transaction(:transaction => transaction_options)
     end
   

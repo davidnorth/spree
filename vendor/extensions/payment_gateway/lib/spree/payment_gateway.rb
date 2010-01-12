@@ -1,9 +1,8 @@
 module Spree
   module PaymentGateway    
     def authorize(amount)
-      gateway = payment_gateway       
       # ActiveMerchant is configured to use cents so we need to multiply order total by 100
-      response = gateway.authorize((amount * 100).to_i, self, gateway_options)      
+      response = payment_gateway.authorize((amount * 100).to_i, self, gateway_options)      
       gateway_error(response) unless response.success?
       
       # create a creditcard_payment for the amount that was authorized
@@ -17,8 +16,14 @@ module Spree
     end
 
     def capture(authorization)
-      gw = payment_gateway
-      response = gw.capture((authorization.amount * 100).to_i, authorization.response_code, minimal_gateway_options)
+      if payment_gateway.payment_profiles_supported?
+        # Gateways supporting payment profiles will need access to creditcard object because this stores the payment profile information
+        # so supply the authorization itself as well as the creditcard, rather than just the authorization code
+        response = payment_gateway.capture(authorization, self, minimal_gateway_options)
+      else
+        # Standard ActiveMerchant capture usage
+        response = payment_gateway.capture((authorization.amount * 100).to_i, authorization.response_code, minimal_gateway_options)
+      end
       gateway_error(response) unless response.success?          
       creditcard_payment = authorization.creditcard_payment
       # create a transaction to reflect the capture
@@ -31,8 +36,7 @@ module Spree
 
     def purchase(amount)
       #combined Authorize and Capture that gets processed by the ActiveMerchant gateway as one single transaction.
-      gateway = payment_gateway 
-      response = gateway.purchase((amount * 100).to_i, self, gateway_options) 
+      response = payment_gateway.purchase((amount * 100).to_i, self, gateway_options) 
       
       gateway_error(response) unless response.success?
       
