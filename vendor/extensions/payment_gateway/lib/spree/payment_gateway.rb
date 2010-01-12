@@ -95,9 +95,8 @@ module Spree
       self.class.type?(number)
     end
 
-    # instantiates the selected gateway and configures with the options stored in the database
     def payment_gateway
-			Gateway.find(:first, :conditions => {:active => true, :environment => ENV['RAILS_ENV']}) 
+      @payment_gateway ||= Gateway.current
     end  
   end
 end
