@@ -46,10 +46,10 @@ class Gateway::AuthorizeNetCim < Gateway
     def create_customer_profile(creditcard, gateway_options)
       response = cim_gateway.create_customer_profile(options)
       if response.success?
-        customer_profile_id = response.params["customer_profile_id"]
-        customer_payment_profile_id = response.params["customer_payment_profile_id_list"].values.first
-        customer_shipping_address_id = response.params["customer_shipping_address_id_list"].values.first
-        {:customer_profile_id => customer_profile_id, :customer_payment_profile_id => customer_payment_profile_id}
+        { :customer_profile_id => response.params["customer_profile_id"], 
+          :customer_payment_profile_id => response.params["customer_payment_profile_id_list"].values.first }
+      else
+        creditcard.gateway_error(response)
       end
     end
 

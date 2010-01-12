@@ -25,10 +25,8 @@ class ShipmentsApiTest < Test::Unit::TestCase
       @checkout = Factory(:checkout, :creditcard => @creditcard, :bill_address => @address, :ship_address => @address)
       @gateway = Gateway::AuthorizeNetCim.create!(:name => 'Authorize.net CIM Gateway')
       @creditcard.reload
-    end
-
-    should "build correct options for creating a profile" do
-      address_options = { 
+      
+      @address_options = { 
         :first_name => 'John',
         :last_name => 'Doe',
         :address1 => '1234 My Street',
@@ -39,21 +37,16 @@ class ShipmentsApiTest < Test::Unit::TestCase
         :country  => 'US',
         :phone    => '(555)555-5555'
       }
-      creditcard = {
-        :number => '4242424242424242',
-        :month => "9",
-        :year => (Time.now.year + 1).to_s,
-        :first_name => 'John',
-        :last_name => 'Doe',
-        :verification_value => '123'
-      }
+    end
+
+    should "build correct options for creating a profile" do
       options = {:profile => { 
         :merchant_customer_id => "#{@checkout.email}-#{@checkout.id}",
         :payment_profiles => {
-          :bill_to => address_options,
+          :bill_to => @address_options,
           :payment => {:credit_card => @creditcard}
           },
-          :ship_to_list => address_options
+          :ship_to_list => @address_options
         }}
       assert_equal options, @gateway.send(:options_for_create_customer_profile, @creditcard, @creditcard.gateway_options)
     end
@@ -64,9 +57,9 @@ class ShipmentsApiTest < Test::Unit::TestCase
         assert result.is_a?(Hash)
         assert_equal "123", result[:customer_profile_id]
       end
-      should "return nil if there is a problem creating profile" do
+      should "raise a gateway error if there is a problem creating profile" do
         ActiveMerchant::Billing::AuthorizeNetCimGateway.force_failure = true
-        assert_nil @gateway.send(:create_customer_profile, @creditcard, @creditcard.gateway_options)
+        assert_raise(Spree::GatewayError) { @gateway.send(:create_customer_profile, @creditcard, @creditcard.gateway_options) }
       end
     end
 
