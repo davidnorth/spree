@@ -58,7 +58,30 @@ class ShipmentsApiTest < Test::Unit::TestCase
       assert_equal options, @gateway.send(:options_for_create_customer_profile, @creditcard, @creditcard.gateway_options)
     end
     
-    should "update creditcard with gateway_customer_profile_id and gateway_payment_profile_id" do
+    context "create_customer_profile" do
+      should "create a customer profile sucessfully" do
+        result = @gateway.send(:create_customer_profile, @creditcard, @creditcard.gateway_options)
+        assert result.is_a?(Hash)
+        assert_equal "123", result[:customer_profile_id]
+      end
+      should "return nil if there is a problem creating profile" do
+        ActiveMerchant::Billing::AuthorizeNetCimGateway.force_failure = true
+        assert_nil @gateway.send(:create_customer_profile, @creditcard, @creditcard.gateway_options)
+      end
+    end
+
+    context "authorize" do
+      setup do
+        @response = @gateway.authorize(500, @creditcard, @creditcard.gateway_options)
+      end
+      should "return successfull Response object" do
+        assert @response.is_a?(ActiveMerchant::Billing::Response)
+        assert @response.success?
+      end
+      should "update creditcard with gateway_customer_profile_id and gateway_payment_profile_id" do
+        assert_equal "123", @creditcard.gateway_customer_profile_id
+        assert_equal "456", @creditcard.gateway_payment_profile_id
+      end
     end
 
   end

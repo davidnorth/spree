@@ -7,31 +7,47 @@ class Gateway::AuthorizeNetCim < Gateway
   end	
 
   def authorize(amount, creditcard, gateway_options)
-
-    options = {:billing_address  => generate_address_hash(checkout.bill_address), 
-               :shipping_address => generate_address_hash(checkout.shipment.address)}
-    options.merge minimal_gateway_options
-
+    create_transaction(amount, creditcard, :auth_only)
   end
   
   def purchase(amount, creditcard, gateway_options)
+    create_transaction(amount, creditcard, :auth_capture)
   end
+  
+  def capture(amount, creditcard, gateway_options)
+    create_transaction(amount, creditcard, :capture_only)
+  end
+  
 
   private
 
+    # Create a transaction on a creditcard
+    # Set up a CIM profile for the card if one doesn't exist
+    # Valid transaction_types are :auth_only, :capture_only and :auth_capture
+    def create_transaction(amount, creditcard, transaction_type)
+      if creditcard.gateway_customer_profile_id.nil?
+        profile_hash = create_customer_profile(creditcard, creditcard.gateway_options)
+        creditcard.update_attributes!(:gateway_customer_profile_id => profile_hash[:customer_profile_id], :gateway_payment_profile_id => profile_hash[:customer_payment_profile_id])
+      end
+      amount = "%.2f" % (amount/100.0) # This gateway requires formated decimal, not cents
+      transaction_options = {
+        :type => :auth_only, 
+        :amount => amount,
+        :customer_profile_id => creditcard.gateway_customer_profile_id,
+        :customer_payment_profile_id => creditcard.gateway_payment_profile_id,
+      }
+      cim_gateway.create_customer_profile_transaction(:transaction => transaction_options)
+    end
+  
     # Create a new CIM customer profile ready to accept a payment
-    def prepare_customer_profile(creditcard, gateway_options)
-
+    def create_customer_profile(creditcard, gateway_options)
       response = cim_gateway.create_customer_profile(options)
-
       if response.success?
         customer_profile_id = response.params["customer_profile_id"]
         customer_payment_profile_id = response.params["customer_payment_profile_id_list"].values.first
         customer_shipping_address_id = response.params["customer_shipping_address_id_list"].values.first
-      else
-        
+        {:customer_profile_id => customer_profile_id, :customer_payment_profile_id => customer_payment_profile_id}
       end
-      
     end
 
     def options_for_create_customer_profile(creditcard, gateway_options)
@@ -50,6 +66,12 @@ class Gateway::AuthorizeNetCim < Gateway
       {:first_name => address.firstname, :last_name => address.lastname, :address1 => address.address1, :address2 => address.address2, :city => address.city,
        :state => address.state_text, :zip => address.zipcode, :country => address.country.iso, :phone => address.phone}
     end
-    
 
+    def cim_gateway
+      ActiveMerchant::Billing::Base.gateway_mode = server.to_sym
+      gateway_options = options
+      gateway_options[:test] = true if test_mode
+  		ActiveMerchant::Billing::AuthorizeNetCimGateway.new(gateway_options)
+    end 
+    
 end
