@@ -28,7 +28,6 @@ class ShipmentsApiTest < Test::Unit::TestCase
     end
 
     should "build correct options for creating a profile" do
-
       address_options = { 
         :first_name => 'John',
         :last_name => 'Doe',
@@ -48,18 +47,15 @@ class ShipmentsApiTest < Test::Unit::TestCase
         :last_name => 'Doe',
         :verification_value => '123'
       }
-      options = { 
+      options = {:profile => { 
         :merchant_customer_id => "#{@checkout.email}-#{@checkout.id}",
         :payment_profiles => {
           :bill_to => address_options,
-          :payment => {:credit_card => creditcard}
+          :payment => {:credit_card => @creditcard}
           },
           :ship_to_list => address_options
-        }
-      
-        assert_equal options, @gateway.send(:options_for_create_customer_profile, @creditcard, @creditcard.gateway_options)
-
-      assert true
+        }}
+      assert_equal options, @gateway.send(:options_for_create_customer_profile, @creditcard, @creditcard.gateway_options)
     end
     
     should "update creditcard with gateway_customer_profile_id and gateway_payment_profile_id" do

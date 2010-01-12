@@ -35,21 +35,13 @@ class Gateway::AuthorizeNetCim < Gateway
     end
 
     def options_for_create_customer_profile(creditcard, gateway_options)
-        card_options = {
-          :number => creditcard.number,
-          :month => creditcard.month,
-          :year => creditcard.year,
-          :first_name => creditcard.first_name,
-          :last_name => creditcard.last_name,
-          :verification_value => creditcard.verification_value
-        }        
-        { :merchant_customer_id => "#{creditcard.checkout.email}-#{creditcard.checkout.id}",
+        {:profile => { :merchant_customer_id => "#{creditcard.checkout.email}-#{creditcard.checkout.id}",
           :ship_to_list => generate_address_hash(creditcard.checkout.ship_address),
           :payment_profiles => {
             :bill_to => generate_address_hash(creditcard.checkout.bill_address),
-            :payment => { :credit_card => card_options}
+            :payment => { :credit_card => creditcard}
           }
-        }
+        }}
     end
 
     # As in PaymentGateway but with separate name fields
