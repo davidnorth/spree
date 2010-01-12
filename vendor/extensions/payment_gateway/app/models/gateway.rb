@@ -47,4 +47,9 @@ class Gateway < ActiveRecord::Base
 			@provider.respond_to?(method) ? provider.send(method) : super
 		end
 	end
+	
+	def payment_profiles_supported?
+	  false
+  end
+  
 end

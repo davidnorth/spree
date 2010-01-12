@@ -18,6 +18,9 @@ class Gateway::AuthorizeNetCim < Gateway
     create_transaction(amount, creditcard, :capture_only)
   end
   
+	def payment_profiles_supported?
+	  true
+  end
 
   private
 
