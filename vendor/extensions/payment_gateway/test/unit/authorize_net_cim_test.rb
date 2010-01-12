@@ -41,7 +41,7 @@ class ShipmentsApiTest < Test::Unit::TestCase
 
     should "build correct options for creating a profile" do
       options = {:profile => { 
-        :merchant_customer_id => "#{@checkout.email}-#{@checkout.id}",
+        :merchant_customer_id => "#{@creditcard.id}",
         :payment_profiles => {
           :bill_to => @address_options,
           :payment => {:credit_card => @creditcard}
@@ -74,6 +74,9 @@ class ShipmentsApiTest < Test::Unit::TestCase
       should "update creditcard with gateway_customer_profile_id and gateway_payment_profile_id" do
         assert_equal "123", @creditcard.gateway_customer_profile_id
         assert_equal "456", @creditcard.gateway_payment_profile_id
+      end
+      should "have authorization code in response" do
+        assert_equal 'XYZ', @response.authorization
       end
     end
 

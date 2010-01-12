@@ -47,6 +47,9 @@ module ActiveMerchant #:nodoc:
               "message"=>{"code"=>"I00001", "text"=>"Successful."}
             }
           }
+          if options[:transaction][:type] == :auth_only
+            params["direct_response"] = {"approval_code"=>"XYZ", "purchase_order_number"=>"", "amount"=>"0.01", "transaction_type"=>"auth_only", "invoice_number"=>""}
+          end       
           ActiveMerchant::Billing::Response.new(true, "Successful.", params)
         end
       end

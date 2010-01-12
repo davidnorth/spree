@@ -33,6 +33,7 @@ module Spree
       #combined Authorize and Capture that gets processed by the ActiveMerchant gateway as one single transaction.
       gateway = payment_gateway 
       response = gateway.purchase((amount * 100).to_i, self, gateway_options) 
+      
       gateway_error(response) unless response.success?
       
       
