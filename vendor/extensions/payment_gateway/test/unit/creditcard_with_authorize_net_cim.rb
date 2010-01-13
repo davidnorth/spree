@@ -9,8 +9,9 @@ class ShipmentsApiTest < ActiveSupport::TestCase
     @gateway.update_attribute(:active, true)
   end
 
-  context "authorization" do
+  context "authorization success" do
     setup do
+      ActiveMerchant::Billing::AuthorizeNetCimGateway.force_failure = false
       @creditcard = Factory.build(:creditcard, :checkout => Factory(:checkout))
       @creditcard.authorize(100)
     end
@@ -29,8 +30,20 @@ class ShipmentsApiTest < ActiveSupport::TestCase
     end
   end
   
+  context "authorization failure" do
+    setup do
+      ActiveMerchant::Billing::AuthorizeNetCimGateway.force_failure = true
+      @creditcard = Factory.build(:creditcard, :number => "4111111111111999", :checkout => Factory(:checkout))
+      begin @creditcard.authorize(100) rescue Spree::GatewayError end
+    end
+    should_not_change("CreditcardPayment.count") { CreditcardPayment.count }
+    should_not_change("CreditcardTxn.count") { CreditcardTxn.count }
+    should_not_change("Order.by_state('new').count") { Order.by_state('new').count }
+  end
+
   context "capture" do
     setup do
+      ActiveMerchant::Billing::AuthorizeNetCimGateway.force_failure = false
       @creditcard = Factory.build(:creditcard, :checkout => Factory(:checkout))
       @creditcard.authorize(100)
       @creditcard.creditcard_payments.first.capture
