@@ -65,7 +65,7 @@ class Gateway::AuthorizeNetCim < Gateway
     end
 
     def options_for_create_customer_profile(creditcard, gateway_options)
-        {:profile => { :merchant_customer_id => "#{creditcard.id}",
+        {:profile => { :merchant_customer_id => "#{creditcard.checkout_id}-#{Time.now.to_i}",
           :ship_to_list => generate_address_hash(creditcard.checkout.ship_address),
           :payment_profiles => {
             :bill_to => generate_address_hash(creditcard.checkout.bill_address),

@@ -41,15 +41,17 @@ class ShipmentsApiTest < Test::Unit::TestCase
 
   context "options_for_create_customer_profile" do
     should "build correct options hash" do
-      options = {:profile => { 
-        :merchant_customer_id => "#{@creditcard.id}",
+      expected_options = {:profile => { 
         :payment_profiles => {
           :bill_to => @address_options,
           :payment => {:credit_card => @creditcard}
           },
           :ship_to_list => @address_options
         }}
-      assert_equal options, @gateway.send(:options_for_create_customer_profile, @creditcard, @creditcard.gateway_options)
+      options = @gateway.send(:options_for_create_customer_profile, @creditcard, @creditcard.gateway_options)
+      merchant_customer_id = options[:profile].delete(:merchant_customer_id)
+      assert_equal expected_options, options
+      assert merchant_customer_id.starts_with?("#{@checkout.id}-")
     end
   end
   
