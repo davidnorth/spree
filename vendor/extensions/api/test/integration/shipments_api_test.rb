@@ -44,7 +44,7 @@ class ShipmentsApiTest < ActionController::IntegrationTest
             :shipment => {
               :tracking => 'tracking-code',
               :inventory_units_attributes => [
-                { :id => @inventory_unit.id, :variant_id => 1 }
+                { :id => @inventory_unit.id, :variant_id => 1, :state => 'shipped' }
               ]
             }
           }
@@ -55,9 +55,10 @@ class ShipmentsApiTest < ActionController::IntegrationTest
           @shipment.reload
           assert_equal 'tracking-code', @shipment.tracking
         end
-        should "update the variant_id of the first inventory_unit" do
+        should "update the variant_id and state of the first inventory_unit" do
           @inventory_unit.reload
           assert_equal 1, @inventory_unit.variant_id
+          assert_equal 'shipped', @inventory_unit.state
         end
       end
       context "with invalid attributes" do
