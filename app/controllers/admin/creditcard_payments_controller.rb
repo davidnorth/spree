@@ -24,6 +24,7 @@ class Admin::CreditcardPaymentsController < Admin::BaseController
   private
   def load_data
     load_object
+    @previous_cards = @order.creditcards.with_payment_profile
     @countries = Country.find(:all).sort
     @shipping_countries = Checkout.countries.sort
     if current_user && current_user.bill_address

@@ -259,6 +259,7 @@ en-US:
   canceled: Canceled
   capture: capture
   card_code: "Card Code"
+  card_details: "Card details"
   card_number: "Card Number"
   card_type_is: Card type is
   cart: Cart
