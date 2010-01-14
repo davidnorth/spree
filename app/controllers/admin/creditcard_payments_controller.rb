@@ -52,25 +52,28 @@ class Admin::CreditcardPaymentsController < Admin::BaseController
   def complete_checkout
     build_object
     load_object
-
-    if @order.checkout.state == "complete"
-      #This is a second or subsequent payment
-      @creditcard_payment.creditcard.checkout = @order.checkout
-      if Spree::Config[:auto_capture]
-        @creditcard_payment.creditcard.purchase(@creditcard_payment.amount)
+    begin 
+      if @order.checkout.state == "complete"
+        #This is a second or subsequent payment
+        @creditcard_payment.creditcard.checkout = @order.checkout
+        if Spree::Config[:auto_capture]
+          @creditcard_payment.creditcard.purchase(@creditcard_payment.amount)
+        else
+          @creditcard_payment.creditcard.authorize(@creditcard_payment.amount)
+        end
       else
-        @creditcard_payment.creditcard.authorize(@creditcard_payment.amount)
-      end
-    else
-      #This is the first payment
-      @order.checkout.creditcard = @creditcard_payment.creditcard
+        #This is the first payment
+        @order.checkout.creditcard = @creditcard_payment.creditcard
 
-      until @order.checkout.state == "complete"
-        @order.checkout.next
+        until @order.checkout.state == "complete"
+          @order.checkout.next
+        end
       end
+      redirect_to admin_order_payments_url(@order)
+    rescue Spree::GatewayError => e
+      flash.now[:error] = "Gateway error: #{e.message}"
     end
 
-    redirect_to admin_order_payments_url(@order)
   end
 
 end
