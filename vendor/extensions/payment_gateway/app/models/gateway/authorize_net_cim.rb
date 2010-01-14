@@ -44,12 +44,15 @@ class Gateway::AuthorizeNetCim < Gateway
       end
       amount = "%.2f" % (amount/100.0) # This gateway requires formated decimal, not cents
       transaction_options = {
-        :type => :auth_only, 
+        :type => transaction_type, 
         :amount => amount,
         :customer_profile_id => creditcard.gateway_customer_profile_id,
         :customer_payment_profile_id => creditcard.gateway_payment_profile_id,
       }.update(options)
-      cim_gateway.create_customer_profile_transaction(:transaction => transaction_options)
+      puts transaction_options.inspect
+      response = cim_gateway.create_customer_profile_transaction(:transaction => transaction_options)
+      puts response.inspect
+      response
     end
   
     # Create a new CIM customer profile ready to accept a payment
