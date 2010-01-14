@@ -67,4 +67,14 @@ class ShipmentsApiTest < ActiveSupport::TestCase
     end
   end
 
+  context "purchase success" do
+    setup do
+      @creditcard = Factory.build(:creditcard, :checkout => Factory(:checkout))
+      @creditcard.purchase(100)
+    end
+    should_change("CreditcardPayment.count", :by => 1) { CreditcardPayment.count }
+    should_change("CreditcardTxn.count", :by => 1) { CreditcardTxn.count }
+    should_not_change("Order.by_state('paid').count") { Order.by_state('paid').count }
+  end
+
 end
