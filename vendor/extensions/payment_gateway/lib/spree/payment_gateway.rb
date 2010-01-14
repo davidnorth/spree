@@ -1,5 +1,10 @@
 module Spree
   module PaymentGateway    
+    
+    def self.included(base)
+      base.named_scope :with_payment_profile, :conditions => "gateway_customer_profile_id IS NOT NULL AND gateway_payment_profile_id IS NOT NULL"
+    end
+    
     def authorize(amount)
       # ActiveMerchant is configured to use cents so we need to multiply order total by 100
       response = payment_gateway.authorize((amount * 100).to_i, self, gateway_options)      
