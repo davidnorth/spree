@@ -48,10 +48,11 @@ class ShipmentsApiTest < Test::Unit::TestCase
           },
           :ship_to_list => @address_options
         }}
+
       options = @gateway.send(:options_for_create_customer_profile, @creditcard, @creditcard.gateway_options)
       merchant_customer_id = options[:profile].delete(:merchant_customer_id)
+
       assert_equal expected_options, options
-      assert merchant_customer_id.starts_with?("#{@checkout.id}-")
     end
   end
   
