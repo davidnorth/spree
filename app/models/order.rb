@@ -17,7 +17,7 @@ class Order < ActiveRecord::Base
 
   has_many :payments,            :extend => Totaling
   has_many :creditcard_payments, :extend => Totaling
-  has_many :creditcards, :through => :creditcard_payments
+  has_many :creditcards, :through => :creditcard_payments, :uniq => true
 
   has_one :checkout
   has_one :bill_address, :through => :checkout
