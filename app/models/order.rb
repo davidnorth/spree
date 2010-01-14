@@ -325,6 +325,11 @@ class Order < ActiveRecord::Base
   def outstanding_balance
     total - payments.total
   end
+  
+  def has_balance_outstanding?
+    outstanding_balance > 0
+  end
+  
 
   private
 

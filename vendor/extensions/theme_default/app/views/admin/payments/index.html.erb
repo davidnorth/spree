@@ -1,8 +1,10 @@
 <div class='toolbar'>
   <ul class='actions'>
+<% if @order.has_balance_outstanding? %>
     <li>
       <%= button_link_to t("new_credit_card_payment"), new_admin_order_creditcard_payment_url(@order), :icon => 'add' %>
     </li>
+<% end %>
   </ul>
   <br class='clear' />
 </div>
