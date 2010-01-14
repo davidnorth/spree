@@ -1,5 +1,5 @@
 $(document).ready(function(){
   
-  $("#creditcard_new").radioControlsVisibilityOfElement('#card_form');
+  $("#card_new").radioControlsVisibilityOfElement('#card_form');
 
 });
