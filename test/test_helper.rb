@@ -85,6 +85,15 @@ def add_capturable_payment(order)
   order.reload
 end
 
+# Sets up an order with state 'new' with completed checkout and authorized payment
+def create_new_order
+  create_complete_order
+  @checkout.next!
+  @checkout.next!
+  @checkout.creditcard_attributes = Factory.attributes_for(:creditcard)
+  @checkout.next!
+end
+
 # useful method for functional tests that require an authenticated user
 def set_current_user
   @user = Factory(:user)

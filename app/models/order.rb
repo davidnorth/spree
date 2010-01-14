@@ -317,8 +317,13 @@ class Order < ActiveRecord::Base
     "#{address.firstname} #{address.lastname}" if address
   end
 
+
   def out_of_stock_items
     @out_of_stock_items
+  end
+
+  def outstanding_balance
+    total - payments.total
   end
 
   private
