@@ -12,5 +12,3 @@ unless defined? SPREE_ROOT
   end
 end
 require "#{SPREE_ROOT}/test/test_helper"
-
-require 'mocks/authorize_net_cim_mock'

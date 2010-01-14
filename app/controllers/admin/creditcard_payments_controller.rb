@@ -41,7 +41,9 @@ class Admin::CreditcardPaymentsController < Admin::BaseController
 
   def build_object
     @object ||= end_of_association_chain.send parent? ? :build : :new, object_params
-    @object.creditcard = Creditcard.new(:checkout => @object.order.checkout) unless @object.creditcard
+    unless current_gateway.payment_profiles_supported? and @object.creditcard = @order.creditcards.find_by_id(params[:creditcard])
+      @object.creditcard ||= Creditcard.new(:checkout => @object.order.checkout)
+    end
     @object
   end
 
