@@ -1,18 +1,20 @@
 <%= render :partial => 'admin/shared/order_tabs', :locals => {:current => "Payments"} %>
 
 <h2><%= t('new') %> <%= t("activerecord.models.#{@object.class.to_s.underscore}.one") %></h2>
-<p>
-  <% for payment_class in [CreditcardPayment, ChequePayment] %>
-    <% unless @object.class == payment_class %>
-      <p><%= link_to "(#{t('new')} #{t("activerecord.models.#{payment_class.to_s.underscore}.one")})", :action => 'new', :payment_type => payment_class.to_s.underscore %></p>
-    <% end %>
-  <% end %>
-</p>
 
 <%= error_messages_for :payment %>
 
+<p>
+  <label><%= t('type') %></label><br />
+  <%= select_tag :payment_type, 
+    options_for_select(  [:creditcard_payment, :cheque_payment].map {|payment_type| [t("activerecord.models.#{payment_type}.one"), new_admin_order_payment_path(:payment_type => payment_type.to_s)] }, new_admin_order_payment_path(:payment_type => @payment.class.to_s.underscore)  ),
+    :class => 'jump_menu'
+  %>
+</p>  
+
 <% form_for @payment, :url => collection_url do |f| %>
 
+  <%= hidden_field_tag :payment_type, object.class.to_s.underscore %>
   <%= render "form", :f => f %>
 
   <p class="form-buttons">

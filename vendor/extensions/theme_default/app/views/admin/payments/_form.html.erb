@@ -1,10 +1,6 @@
-<%= hidden_field_tag :payment_type, @object.class.to_s.underscore %>
 <p>
   <%= f.label :amount, t(:amount) %> 
   <%= f.text_field :amount, :size=> 8, :value => @order.outstanding_balance %>
-  &nbsp;
-  <label><%= radio_button_tag :credit_or_debit, 'debit', true %> <%= t('debit') %></label> 
-  <label><%= radio_button_tag :credit_or_debit, 'credit' %> <%= t('credit') %></label>
 </p>  
 
 <% if @object.class == CreditcardPayment %>
