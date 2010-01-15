@@ -311,6 +311,7 @@ en-US:
   create_a_new_account: "Create a new account"
   create_user_account: Create User Account
   created_successfully: "Created Successfully"
+  credit: Credit
   credit_card: "Credit Card"
   credit_card_capture_complete: "Credit Card Was Captured"
   credit_card_payment: "Credit Card Payment"
@@ -323,6 +324,7 @@ en-US:
   customer_details: "Customer Details"
   customer_search: "Customer Search"
   date_range: "Date Range"
+  debit: Debit
   delete: Delete
   depth: Depth
   description: Description

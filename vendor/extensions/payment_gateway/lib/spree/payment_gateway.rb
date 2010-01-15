@@ -55,6 +55,20 @@ module Spree
         :txn_type => CreditcardTxn::TxnType::PURCHASE
       )
     end
+    
+    def credit(amount, transaction)
+      response = payment_gateway.credit((amount * 100).to_i, transaction.response_code, minimal_gateway_options)
+      gateway_error(response) unless response.success?
+
+      # create a creditcard_payment for the amount that was purchased
+      creditcard_payment = checkout.order.creditcard_payments.create!(:amount => -amount, :creditcard => self)
+      # create a transaction to reflect the purchase
+      creditcard_payment.creditcard_txns << CreditcardTxn.new(
+        :amount => -amount,
+        :response_code => response.authorization,
+        :txn_type => CreditcardTxn::TxnType::CREDIT
+      )
+    end
 
     def void
 =begin
