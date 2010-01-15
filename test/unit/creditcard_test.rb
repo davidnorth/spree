@@ -50,7 +50,7 @@ class CreditcardTest < ActiveSupport::TestCase
     should_change("CreditcardTxn.count", :by => 1) { CreditcardTxn.count }
     should_not_change("Order.by_state('new').count") { Order.by_state('new').count }
   end
-
+  
   context "authorization failure" do
     setup do
       @creditcard = Factory.build(:creditcard, :number => "4111111111111999", :checkout => Factory(:checkout))
@@ -64,6 +64,10 @@ class CreditcardTest < ActiveSupport::TestCase
   context "purchase success" do
     setup do
       @creditcard = Factory.build(:creditcard, :checkout => Factory(:checkout))
+      @order = @creditcard.checkout.order
+      Factory(:line_item, :order => @order, :price => 100, :quantity => 1)
+      @order.reload
+      @order.save
       @creditcard.purchase(100)
     end
     should_change("CreditcardPayment.count", :by => 1) { CreditcardPayment.count }
