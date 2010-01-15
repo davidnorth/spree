@@ -323,13 +323,20 @@ class Order < ActiveRecord::Base
   end
 
   def outstanding_balance
-    total - payments.total
+    [0, total - payments.total].max
   end
   
   def has_balance_outstanding?
     outstanding_balance > 0
   end
   
+  def outstanding_credit
+    [0, payments.total - total].max
+  end
+  
+  def has_credit_outstanding?
+    outstanding_credit > 0
+  end
 
   private
 
