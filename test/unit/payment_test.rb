@@ -5,32 +5,48 @@ class CreditcardPaymentTest < ActiveSupport::TestCase
 
   context "validation" do
     setup do           
-      creditcard = Factory(:creditcard, :checkout => Factory(:checkout))
-      @payment = Factory(:creditcard_payment, :creditcard => creditcard)
-      @auth_amount = @payment.authorization.amount
+      @order = Factory(:order)
     end
 
     context "when amount is positive but exceeds outstanding balance" do
-      setup { }
+      setup do
+        @payment = @order.payments.new(:amount => 3.00)
+        @payment.order.stub!(:outstanding_balance, :return => 2.00)
+      end
       should "be invalid with error on amount" do
+        assert !@payment.valid?
+        assert @payment.errors.on(:amount)
       end
     end
 
     context "when amount is negative payment but exceeds credit owed" do
-      setup { }
+      setup do
+        @payment = @order.payments.new(:amount => -5.00)
+        @payment.order.stub!(:outstanding_credit, :return => 2.50)
+      end
       should "be invalid with error on amount" do
+        assert !@payment.valid?
+        assert @payment.errors.on(:amount)
       end
     end
 
     context "when amount is positive and equal to outstanding balance" do
-      setup { }
+      setup do
+        @payment = @order.payments.new(:amount => 5.00)
+        @payment.order.stub!(:outstanding_balance, :return => 5.00)
+      end
       should "be valid" do
+        assert @payment.valid?
       end
     end
 
     context "when amount is negative and equal to credit owed" do
-      setup { }
+      setup do
+        @payment = @order.payments.new(:amount => -5.00)
+        @payment.order.stub!(:outstanding_credit, :return => 5.00)
+      end
       should "be valid" do
+        assert @payment.valid?
       end
     end
 
