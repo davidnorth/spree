@@ -24,7 +24,7 @@ class Admin::PaymentsController < Admin::BaseController
     build_object
     load_object
 
-    if @object.class == CreditcardPayment
+    if object.class == CreditcardPayment
       
       unless object.valid?
         response_for :create_fails
@@ -101,13 +101,19 @@ class Admin::PaymentsController < Admin::BaseController
     @object
   end
 
+  def end_of_association_chain
+    parent_object.payments  
+  end
+  
   # Set class for STI based on selected payment type
   def model_name
     return 'payment' if params[:action] == 'index'
     if %w(cheque_payment creditcard_payment).include?(params[:payment_type])
       params[:payment_type]
-    else
+    elsif params[:action] == 'new'
       'creditcard_payment'
+    else
+      'payment'
     end
   end
   def object_name
