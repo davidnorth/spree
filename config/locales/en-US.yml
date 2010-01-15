@@ -122,6 +122,9 @@ en-US:
       address:
         one: Address
         other: Addresses
+      cheque_payment:
+        one: Cheque Payment
+        other: Cheque Payments
       country:
         one: Country
         other: Countries
@@ -277,6 +280,7 @@ en-US:
     complete: Complete
     delivery: Delivery
     payment: Payment
+  cheque: Cheque
   city: City
   clone: Clone
   code: Code
@@ -450,12 +454,12 @@ en-US:
   new_billing_integration: New Billing Integration
   new_category: "New category"
   new_coupon: New Coupon
-  new_credit_card_payment: "New Credit Card Payment"
   new_customer: "New Customer"
   new_image: "New Image"
   new_option_type: "New Option Type"
   new_option_value: "New Option Value"
   new_order: "New Order"
+  new_payment: "New Payment"
   new_product: "New Product"
   new_product_group: New Product Group
   new_property: "New Property"

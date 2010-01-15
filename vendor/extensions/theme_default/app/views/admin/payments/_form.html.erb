@@ -1,11 +1,12 @@
+<%= hidden_field_tag :payment_type, @object.class.to_s.underscore %>
 <p>
   <%= f.label :amount, t(:amount) %> 
   <%= f.text_field :amount, :size=> 8, :value => @order.outstanding_balance %>
-</p>
+</p>  
 
+<% if @object.class == CreditcardPayment %>
 <fieldset>
   <legend><%= t('creditcard') %></legend>
-
   <% if current_gateway.payment_profiles_supported? and @previous_cards.any? %>
   <p class="field">
     <% for card in @previous_cards %>
@@ -19,8 +20,5 @@
     <%= render 'card_form', :f => f %>
     <%= render 'bill_address_form', :f => f %>
   </div>
-
 </fieldset>
-
-
-
+<% end %>

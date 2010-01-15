@@ -1,9 +1,17 @@
 <%= render :partial => 'admin/shared/order_tabs', :locals => {:current => "Payments"} %>
 
-<h2><%= t("new_credit_card_payment")%></h2>
+<h2><%= t('new') %> <%= t("activerecord.models.#{@object.class.to_s.underscore}.one") %></h2>
+<p>
+  <% for payment_class in [CreditcardPayment, ChequePayment] %>
+    <% unless @object.class == payment_class %>
+      <p><%= link_to "(#{t('new')} #{t("activerecord.models.#{payment_class.to_s.underscore}.one")})", :action => 'new', :payment_type => payment_class.to_s.underscore %></p>
+    <% end %>
+  <% end %>
+</p>
 
-<%= error_messages_for :creditcard_payment %>
-<% form_for @creditcard_payment, :url => collection_url do |f| %>
+<%= error_messages_for :payment %>
+
+<% form_for @payment, :url => collection_url do |f| %>
 
   <%= render "form", :f => f %>
 

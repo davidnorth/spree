@@ -67,6 +67,21 @@ class Admin::PaymentsControllerTest < ActionController::TestCase
           assert_equal @creditcard, @order.creditcard_payments.last.creditcard
         end        
       end
+      
+      context "for cheque payment" do
+        setup do
+          @params = {
+            :payment_type => 'cheque_payment',
+            :order_id => @order.id, 
+            :cheque_payment => {
+              :amount => '1.99',
+            }
+          }
+          post :create, @params
+        end
+        should_create :cheque_payment
+        should_respond_with :redirect
+      end
 
     end
 

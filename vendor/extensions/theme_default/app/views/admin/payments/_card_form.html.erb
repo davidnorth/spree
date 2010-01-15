@@ -42,8 +42,8 @@
   </tr>
 </table>
 
-<%= cc_form.hidden_field :address_id, :value => @creditcard_payment.order.checkout.bill_address.id -%>
-<%= cc_form.hidden_field :first_name, :value => @creditcard_payment.order.checkout.bill_address.firstname -%>
-<%= cc_form.hidden_field :last_name, :value => @creditcard_payment.order.checkout.bill_address.lastname -%>
+<%= cc_form.hidden_field :address_id, :value => @payment.order.checkout.bill_address.id -%>
+<%= cc_form.hidden_field :first_name, :value => @payment.order.checkout.bill_address.firstname -%>
+<%= cc_form.hidden_field :last_name, :value => @payment.order.checkout.bill_address.lastname -%>
 
 <% end %>
