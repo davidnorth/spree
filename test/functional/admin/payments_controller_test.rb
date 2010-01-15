@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class Admin::CreditcardPaymentsControllerTest < ActionController::TestCase
+class Admin::PaymentsControllerTest < ActionController::TestCase
   fixtures :gateways
 
   context "given order" do
@@ -15,8 +15,9 @@ class Admin::CreditcardPaymentsControllerTest < ActionController::TestCase
       context "entering a new creditcard" do
         setup do
           @params = {
+            :payment_type => 'creditcard_payment',
             :order_id => @order.id, 
-            :creditcard => 'new',
+            :card => 'new',
             :creditcard_payment => {
               :amount => '2.99',
               :creditcard_attributes => Factory.attributes_for(:creditcard),
@@ -29,7 +30,7 @@ class Admin::CreditcardPaymentsControllerTest < ActionController::TestCase
           }
           post :create, @params
         end
-
+      
         should_create :creditcard_payment
         should_respond_with :redirect
         should "create payment with the right attributes" do
@@ -47,8 +48,9 @@ class Admin::CreditcardPaymentsControllerTest < ActionController::TestCase
           # Using a mock gateway so there just need to be some values in these fields
           @creditcard.update_attributes(:gateway_customer_profile_id => '123', :gateway_payment_profile_id => '456')
           @params = {
+            :payment_type => 'creditcard_payment',
             :order_id => @order.id, 
-            :creditcard => @creditcard.id,
+            :card => @creditcard.id,
             :creditcard_payment => {
               :amount => '1.99',
             }

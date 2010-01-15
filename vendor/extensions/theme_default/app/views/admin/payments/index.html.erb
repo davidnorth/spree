@@ -2,7 +2,7 @@
   <ul class='actions'>
 <% if @order.has_balance_outstanding? %>
     <li>
-      <%= button_link_to t("new_credit_card_payment"), new_admin_order_creditcard_payment_url(@order), :icon => 'add' %>
+      <%= button_link_to t("new_credit_card_payment"), new_admin_order_payment_url(@order, :payment_type => 'creditcard_payment'), :icon => 'add' %>
     </li>
 <% end %>
   </ul>
