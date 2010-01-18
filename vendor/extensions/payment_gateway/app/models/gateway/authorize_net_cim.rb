@@ -69,7 +69,6 @@ class Gateway::AuthorizeNetCim < Gateway
 
     # Add the transId tag for refund transactions
     def add_transaction(xml, transaction)
-      puts '- Patched add_transaction -'
       unless CIM_TRANSACTION_TYPES.include?(transaction[:type])
         raise StandardError, "Invalid Customer Information Manager Transaction Type: #{transaction[:type]}"
       end
@@ -137,8 +136,8 @@ class Gateway::AuthorizeNetCim < Gateway
     create_transaction((authorization.amount * 100).to_i, creditcard, :capture_only, :approval_code => authorization.response_code)
   end
   
-  def capture(amount, transaction, gateway_options)
-    create_transaction(amount, transaction.creditcard, :refund)
+  def credit(amount, creditcard, response_code, gateway_options)
+    create_transaction(amount, creditcard, :refund, :trans_id => response_code)
   end
   
 	def payment_profiles_supported?

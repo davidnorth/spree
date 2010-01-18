@@ -57,7 +57,11 @@ module Spree
     end
     
     def credit(amount, transaction)
-      response = payment_gateway.credit((amount * 100).to_i, transaction.response_code, minimal_gateway_options)
+      if payment_gateway.payment_profiles_supported?
+        response = payment_gateway.credit((amount * 100).to_i, self, transaction.response_code, minimal_gateway_options)
+      else
+        response = payment_gateway.credit((amount * 100).to_i, transaction.response_code, minimal_gateway_options)
+      end
       gateway_error(response) unless response.success?
 
       # create a creditcard_payment for the amount that was purchased
