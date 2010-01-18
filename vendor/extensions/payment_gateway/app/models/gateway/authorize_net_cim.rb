@@ -8,6 +8,115 @@ class Gateway::AuthorizeNetCim < Gateway
     attr_writer :authorization
   end
 
+  ActiveMerchant::Billing::AuthorizeNetCimGateway.class_eval do
+
+    CIM_TRANSACTION_TYPES = {
+      :auth_capture => 'profileTransAuthCapture',
+      :auth_only => 'profileTransAuthOnly',
+      :capture_only => 'profileTransCaptureOnly',
+      :refund => 'profileTransRefund'
+    }
+
+    private
+
+    # Simplified implementation of this method because transaction_id wasn't always being set
+    def parse_direct_response(response)
+      direct_response_fields = response.params['direct_response'].split(',')
+      {
+        'raw' => response.params['direct_response'],
+        'response_code' => direct_response_fields[0],
+        'response_subcode' => direct_response_fields[1],
+        'response_reason_code' => direct_response_fields[2],
+        'message' => direct_response_fields[3],
+        'approval_code' => direct_response_fields[4],
+        'avs_response' => direct_response_fields[5],
+        'transaction_id' => direct_response_fields[6],
+        'invoice_number' => direct_response_fields[7],
+        'order_description' => direct_response_fields[8],
+        'amount' => direct_response_fields[9],
+        'method' => direct_response_fields[10],
+        'transaction_type' => direct_response_fields[11],
+        'customer_id' => direct_response_fields[12],
+        'first_name' => direct_response_fields[13],
+        'last_name' => direct_response_fields[14],
+        'company' => direct_response_fields[15],
+        'address' => direct_response_fields[16],
+        'city' => direct_response_fields[17],
+        'state' => direct_response_fields[18],
+        'zip_code' => direct_response_fields[19],
+        'country' => direct_response_fields[20],
+        'phone' => direct_response_fields[21],
+        'fax' => direct_response_fields[22],
+        'email_address' => direct_response_fields[23],
+        'ship_to_first_name' => direct_response_fields[24],
+        'ship_to_last_name' => direct_response_fields[25],
+        'ship_to_company' => direct_response_fields[26],
+        'ship_to_address' => direct_response_fields[27],
+        'ship_to_city' => direct_response_fields[28],
+        'ship_to_state' => direct_response_fields[29],
+        'ship_to_zip_code' => direct_response_fields[30],
+        'ship_to_country' => direct_response_fields[31],
+        'tax' => direct_response_fields[32],
+        'duty' => direct_response_fields[33],
+        'freight' => direct_response_fields[34],
+        'tax_exempt' => direct_response_fields[35],
+        'purchase_order_number' => direct_response_fields[36],
+        'md5_hash' => direct_response_fields[37],
+        'card_code' => direct_response_fields[38],
+        'cardholder_authentication_verification_response' => direct_response_fields[39]
+      }
+    end
+
+    # Add the transId tag for refund transactions
+    def add_transaction(xml, transaction)
+      puts '- Patched add_transaction -'
+      unless CIM_TRANSACTION_TYPES.include?(transaction[:type])
+        raise StandardError, "Invalid Customer Information Manager Transaction Type: #{transaction[:type]}"
+      end
+
+      xml.tag!('transaction') do
+        xml.tag!(CIM_TRANSACTION_TYPES[transaction[:type]]) do
+          # The amount to be billed to the customer
+          xml.tag!('amount', transaction[:amount])
+          xml.tag!('customerProfileId', transaction[:customer_profile_id])
+          xml.tag!('customerPaymentProfileId', transaction[:customer_payment_profile_id])
+          xml.tag!('approvalCode', transaction[:approval_code]) if transaction[:type] == :capture_only
+          xml.tag!('transId', transaction[:trans_id]) if transaction[:type] == :refund
+          add_order(xml, transaction[:order]) if transaction[:order]
+        end
+      end
+    end
+
+    # Set response authorization to the transaction_id
+    def commit(action, request)
+      url = test? ? test_url : live_url
+      xml = ssl_post(url, request, "Content-Type" => "text/xml")
+
+      response_params = parse(action, xml)
+
+      message = response_params['messages']['message']['text']
+      test_mode = test? || message =~ /Test Mode/
+      success = response_params['messages']['result_code'] == 'Ok'
+
+      response = ActiveMerchant::Billing::Response.new(success, message, response_params,
+        :test => test_mode,
+        :authorization => response_params['customer_profile_id'] || (response_params['profile'] ? response_params['profile']['customer_profile_id'] : nil)
+      )
+
+      response.params['direct_response'] = parse_direct_response(response) if response.params['direct_response']
+
+      if response.authorization.nil? and response.params['direct_response']
+        if !response.params['direct_response']['transaction_id'].blank? and response.params['direct_response']['transaction_id'] != '0'
+          response.authorization = response.params['direct_response']['transaction_id']
+        end
+      end
+
+      response
+    end
+
+
+  end
+
 
 
   def provider_class
@@ -26,6 +135,10 @@ class Gateway::AuthorizeNetCim < Gateway
 
   def capture(authorization, creditcard, gateway_options)
     create_transaction((authorization.amount * 100).to_i, creditcard, :capture_only, :approval_code => authorization.response_code)
+  end
+  
+  def capture(amount, transaction, gateway_options)
+    create_transaction(amount, transaction.creditcard, :refund)
   end
   
 	def payment_profiles_supported?
