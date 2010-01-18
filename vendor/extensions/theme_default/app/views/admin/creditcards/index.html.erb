@@ -1,0 +1,33 @@
+<%= render :partial => 'admin/shared/order_tabs', :locals => {:current => "Creditcards"} %>
+
+<table class="index">
+  <tr>
+    <th><%= t("activerecord.attributes.creditcard.number") %></th>
+    <th><%= t("transactions") %></th>
+  </tr>
+<% for creditcard in collection -%>
+    <tr>
+      <td><%= creditcard.display_number %></td>
+      <td>
+
+        <table>
+          <tr>
+            <th><%= t('date_created') %></th>
+            <th><%= t('amount') %></th>
+            <th><%= t('response_code') %></th>
+            <th></th>
+          </tr>
+        <% for txn in creditcard.creditcard_txns -%>
+          <tr>
+            <td><%= txn.created_at %></td>
+            <td><%= number_to_currency txn.amount %></td>
+            <td><%= txn.response_code %></td>
+            <td></td>
+          </tr>
+        <% end -%>
+        </table>
+
+      </td>
+    </tr>
+<% end -%>
+</table>
