@@ -5,9 +5,11 @@ class Admin::CreditcardsController < Admin::BaseController
   
   def refund
     load_object
-    @creditcard_txn = @creditcard.creditcard_txns.find(params[:txn_id])
-    @creditcard.credit(params[:amount].to_f, @creditcard_txn)
-    redirect_to collection_path
+    if request.post?
+      @creditcard_txn = @creditcard.creditcard_txns.find(params[:txn_id])
+      @creditcard.credit(params[:amount].to_f, @creditcard_txn)
+      redirect_to collection_path
+    end
   end
   
 end

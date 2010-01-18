@@ -19,6 +19,13 @@ class Admin::CreditcardsControllerTest < ActionController::TestCase
       should_respond_with :success
     end
     
+    context "GET refund" do
+      setup do
+        get :refund, :order_id => @order.id, :id => @creditcard.id
+      end
+      should_respond_with :success
+    end
+    
     context "POST refund" do
       setup do
         @order.line_items << Factory(:line_item, :quantity => 1, :price => 5.00)
