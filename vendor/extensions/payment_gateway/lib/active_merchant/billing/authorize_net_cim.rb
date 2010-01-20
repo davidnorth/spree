@@ -754,12 +754,14 @@ module ActiveMerchant #:nodoc:
         test_mode = test? || message =~ /Test Mode/
         success = response_params['messages']['result_code'] == 'Ok'
 
+        direct_response_params = parse_direct_response(response_params['direct_response'])
+        
         response = Response.new(success, message, response_params,
           :test => test_mode,
-          :authorization => response_params['customer_profile_id'] || (response_params['profile'] ? response_params['profile']['customer_profile_id'] : nil)
+          :authorization => response_params['customer_profile_id'] || (response_params['profile'] ? response_params['profile']['customer_profile_id'] : direct_response_params['transaction_id']),
+          :avs_result => {:code => direct_response_params['avs_response']}
         )
-
-        response.params['direct_response'] = parse_direct_response(response) if response.params['direct_response']
+        response.params['direct_response'] = direct_response_params
 
         # transaction_id from direct response should be used for the authorization option on response
         if response.authorization.nil? and response.params['direct_response']
@@ -775,54 +777,52 @@ module ActiveMerchant #:nodoc:
         xml.tag!(tag_name, data) unless data.blank? || data.nil?
       end
 
-      def parse_direct_response(response)
-        direct_response = {'raw' => response.params['direct_response']}
-        direct_response_fields = response.params['direct_response'].split(',')
-
-        direct_response.merge(
-          {
-            'response_code' => direct_response_fields[0],
-            'response_subcode' => direct_response_fields[1],
-            'response_reason_code' => direct_response_fields[2],
-            'message' => direct_response_fields[3],
-            'approval_code' => direct_response_fields[4],
-            'avs_response' => direct_response_fields[5],
-            'transaction_id' => direct_response_fields[6],
-            'invoice_number' => direct_response_fields[7],
-            'order_description' => direct_response_fields[8],
-            'amount' => direct_response_fields[9],
-            'method' => direct_response_fields[10],
-            'transaction_type' => direct_response_fields[11],
-            'customer_id' => direct_response_fields[12],
-            'first_name' => direct_response_fields[13],
-            'last_name' => direct_response_fields[14],
-            'company' => direct_response_fields[15],
-            'address' => direct_response_fields[16],
-            'city' => direct_response_fields[17],
-            'state' => direct_response_fields[18],
-            'zip_code' => direct_response_fields[19],
-            'country' => direct_response_fields[20],
-            'phone' => direct_response_fields[21],
-            'fax' => direct_response_fields[22],
-            'email_address' => direct_response_fields[23],
-            'ship_to_first_name' => direct_response_fields[24],
-            'ship_to_last_name' => direct_response_fields[25],
-            'ship_to_company' => direct_response_fields[26],
-            'ship_to_address' => direct_response_fields[27],
-            'ship_to_city' => direct_response_fields[28],
-            'ship_to_state' => direct_response_fields[29],
-            'ship_to_zip_code' => direct_response_fields[30],
-            'ship_to_country' => direct_response_fields[31],
-            'tax' => direct_response_fields[32],
-            'duty' => direct_response_fields[33],
-            'freight' => direct_response_fields[34],
-            'tax_exempt' => direct_response_fields[35],
-            'purchase_order_number' => direct_response_fields[36],
-            'md5_hash' => direct_response_fields[37],
-            'card_code' => direct_response_fields[38],
-            'cardholder_authentication_verification_response' => direct_response_fields[39]
-          }
-        )
+      def parse_direct_response(raw)
+        return {} if raw.blank?
+        direct_response_fields = raw.split(',')
+        {
+          'raw' => raw,
+          'response_code' => direct_response_fields[0],
+          'response_subcode' => direct_response_fields[1],
+          'response_reason_code' => direct_response_fields[2],
+          'message' => direct_response_fields[3],
+          'approval_code' => direct_response_fields[4],
+          'avs_response' => direct_response_fields[5],
+          'transaction_id' => direct_response_fields[6],
+          'invoice_number' => direct_response_fields[7],
+          'order_description' => direct_response_fields[8],
+          'amount' => direct_response_fields[9],
+          'method' => direct_response_fields[10],
+          'transaction_type' => direct_response_fields[11],
+          'customer_id' => direct_response_fields[12],
+          'first_name' => direct_response_fields[13],
+          'last_name' => direct_response_fields[14],
+          'company' => direct_response_fields[15],
+          'address' => direct_response_fields[16],
+          'city' => direct_response_fields[17],
+          'state' => direct_response_fields[18],
+          'zip_code' => direct_response_fields[19],
+          'country' => direct_response_fields[20],
+          'phone' => direct_response_fields[21],
+          'fax' => direct_response_fields[22],
+          'email_address' => direct_response_fields[23],
+          'ship_to_first_name' => direct_response_fields[24],
+          'ship_to_last_name' => direct_response_fields[25],
+          'ship_to_company' => direct_response_fields[26],
+          'ship_to_address' => direct_response_fields[27],
+          'ship_to_city' => direct_response_fields[28],
+          'ship_to_state' => direct_response_fields[29],
+          'ship_to_zip_code' => direct_response_fields[30],
+          'ship_to_country' => direct_response_fields[31],
+          'tax' => direct_response_fields[32],
+          'duty' => direct_response_fields[33],
+          'freight' => direct_response_fields[34],
+          'tax_exempt' => direct_response_fields[35],
+          'purchase_order_number' => direct_response_fields[36],
+          'md5_hash' => direct_response_fields[37],
+          'card_code' => direct_response_fields[38],
+          'cardholder_authentication_verification_response' => direct_response_fields[39]
+        }
       end
 
       def parse(action, xml)
