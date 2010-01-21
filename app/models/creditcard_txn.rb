@@ -24,6 +24,7 @@ class CreditcardTxn < ActiveRecord::Base
         when CreditcardTxn::TxnType::VOID
           delete_creditcard_payment
         when CreditcardTxn::TxnType::CREDIT
+          update_creditcard_payment
       end
       save
     end

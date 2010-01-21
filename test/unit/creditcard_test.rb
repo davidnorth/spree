@@ -126,7 +126,8 @@ class CreditcardTest < ActiveSupport::TestCase
         assert_equal -25.00, @new_transaction.amount.to_f
         assert_equal CreditcardTxn::TxnType::CREDIT, @new_transaction.txn_type
       end
-    
+      
+      should_change("the payment amount", :by => -25.00) { @creditcard.checkout.order.creditcard_payments.first(:order => 'id DESC').amount.to_f }
     end
   end
   
