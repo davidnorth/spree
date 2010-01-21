@@ -47,7 +47,7 @@ module Spree
 
     def void(authorization)
       if payment_gateway.payment_profiles_supported?
-        response = payment_gateway.void(authorization.response_code, self, minimal_gateway_options)
+        response = payment_gateway.credit((authorization.amount * 100).to_i, self, authorization.response_code, minimal_gateway_options)
       else
         response = payment_gateway.void(authorization.response_code, minimal_gateway_options)
       end      

@@ -16,5 +16,19 @@ class Admin::CreditcardsController < Admin::BaseController
       end      
     end
   end
+
+  def void
+    load_object
+    @creditcard_txn = CreditcardTxn.find(params[:txn_id])
+    
+    if request.post?
+      begin
+        @creditcard.void(@creditcard_txn)
+      rescue Spree::GatewayError => e
+        flash[:error] = e.message
+      end      
+      redirect_to collection_path
+    end
+  end  
   
 end

@@ -26,6 +26,10 @@ class Gateway::AuthorizeNetCim < Gateway
     create_transaction(amount, creditcard, :refund, :trans_id => response_code)
   end
   
+  def void(amount, creditcard, response_code, gateway_options)
+    create_transaction(amount, creditcard, :void, :trans_id => response_code)
+  end
+  
   def payment_profiles_supported?
 	  true
   end
