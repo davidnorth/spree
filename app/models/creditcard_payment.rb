@@ -18,11 +18,4 @@ class CreditcardPayment < Payment
     update_attribute("amount", original_auth.amount)
   end
 
-  def authorization
-    #find the transaction associated with the original authorization/capture
-    txns.find(:first,
-              :conditions => ["txn_type = ? AND response_code IS NOT NULL", CreditcardTxn::TxnType::AUTHORIZE.to_s],
-              :order => 'created_at DESC')
-  end
-
 end

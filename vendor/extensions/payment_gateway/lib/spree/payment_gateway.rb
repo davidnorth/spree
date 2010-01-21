@@ -14,7 +14,7 @@ module Spree
       # create a creditcard_payment for the amount that was authorized
       creditcard_payment = checkout.order.creditcard_payments.create(:amount => 0, :creditcard => self)
       # create a transaction to reflect the authorization
-      creditcard_payment.creditcard_txns << CreditcardTxn.new(
+      creditcard_txns.create(
         :amount => amount,
         :response_code => response.authorization,
         :txn_type => CreditcardTxn::TxnType::AUTHORIZE,
@@ -36,10 +36,11 @@ module Spree
       gateway_error_from_response(response) unless response.success?          
       creditcard_payment = authorization.creditcard_payment
       # create a transaction to reflect the capture
-      creditcard_payment.creditcard_txns << CreditcardTxn.new(
+      creditcard_txns.create(
         :amount => authorization.amount,
         :response_code => response.authorization,
-        :txn_type => CreditcardTxn::TxnType::CAPTURE
+        :txn_type => CreditcardTxn::TxnType::CAPTURE,
+        :original_txn => authorization
       )
     rescue ActiveMerchant::ConnectionError => e
       gateway_error I18n.t(:unable_to_connect_to_gateway)      
@@ -54,10 +55,11 @@ module Spree
       gateway_error_from_response(response) unless response.success?
       creditcard_payment = authorization.creditcard_payment
       # create a transaction to reflect the void
-      creditcard_payment.creditcard_txns << CreditcardTxn.new(
+      creditcard_txns.create(
         :amount => authorization.amount,
         :response_code => response.authorization,
-        :txn_type => CreditcardTxn::TxnType::VOID
+        :txn_type => CreditcardTxn::TxnType::VOID,
+        :original_txn => authorization
       )
     end
 
@@ -66,12 +68,11 @@ module Spree
       response = payment_gateway.purchase((amount * 100).to_i, self, gateway_options) 
       
       gateway_error_from_response(response) unless response.success?
-      
-      
+            
       # create a creditcard_payment for the amount that was purchased
       creditcard_payment = checkout.order.creditcard_payments.create(:amount => amount, :creditcard => self)
       # create a transaction to reflect the purchase
-      creditcard_payment.creditcard_txns << CreditcardTxn.new(
+      creditcard_txns.create(
         :amount => amount,
         :response_code => response.authorization,
         :txn_type => CreditcardTxn::TxnType::PURCHASE,
@@ -89,13 +90,13 @@ module Spree
       end
       gateway_error_from_response(response) unless response.success?
 
-      # create a creditcard_payment for the amount that was purchased
-      creditcard_payment = checkout.order.creditcard_payments.create!(:amount => -amount, :creditcard => self)
+      save
       # create a transaction to reflect the purchase
-      creditcard_payment.creditcard_txns << CreditcardTxn.new(
+      txn = creditcard_txns.create(
         :amount => -amount,
         :response_code => response.authorization,
-        :txn_type => CreditcardTxn::TxnType::CREDIT
+        :txn_type => CreditcardTxn::TxnType::CREDIT,
+        :original_txn => transaction
       )
     rescue ActiveMerchant::ConnectionError => e
       gateway_error I18n.t(:unable_to_connect_to_gateway)      

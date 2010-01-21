@@ -1,6 +1,12 @@
 class CreditcardTxn < ActiveRecord::Base
+  belongs_to :creditcard
   belongs_to :creditcard_payment
+
+  # For refunds and voids, this association will store the original transaction that's being refunded or voided
+  belongs_to :original_txn, :class_name => 'CreditcardTxn', :foreign_key => 'original_creditcard_txn_id'
+
   validates_numericality_of :amount
+  after_create :update_payments
   
   enumerable_constant :txn_type, :constants => [:authorize, :capture, :purchase, :void, :credit]
   
@@ -8,8 +14,39 @@ class CreditcardTxn < ActiveRecord::Base
     TxnType.from_value(txn_type)
   end
   
-  def creditcard
-    creditcard_payment.creditcard
-  end
+
+  private
   
+    def update_payments
+      case txn_type
+        when CreditcardTxn::TxnType::PURCHASE, CreditcardTxn::TxnType::CAPTURE
+          create_creditcard_payment
+        when CreditcardTxn::TxnType::VOID
+          delete_creditcard_payment
+        when CreditcardTxn::TxnType::CREDIT
+      end
+      save
+    end
+  
+    def create_creditcard_payment
+      if txn_type == CreditcardTxn::TxnType::PURCHASE
+        update_attribute(:creditcard_payment, CreditcardPayment.create!(:order => creditcard.checkout.order, :amount => amount))
+      else
+        # for capture transactions, payment is assigned to the original authorize transaction instead
+        original_txn.update_attribute(:creditcard_payment, CreditcardPayment.create!(:order => creditcard.checkout.order, :amount => amount))
+      end
+    end
+  
+    def update_creditcard_payment
+      if original_txn and original_txn.creditcard_payment
+        original_txn.creditcard_payment.update_attribute(:amount, original_txn.creditcard_payment.amount + amount)
+      end
+    end
+  
+    def delete_creditcard_payment
+      if original_txn and original_txn.creditcard_payment
+        original_txn.creditcard_payment.destroy
+      end
+    end
+
 end
