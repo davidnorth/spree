@@ -8,8 +8,12 @@ class Creditcard < ActiveRecord::Base
   
   validates_numericality_of :month, :integer => true
   validates_numericality_of :year, :integer => true   
-  validates_presence_of :number, :unless => Proc.new{|c| c.gateway_customer_profile_id }
-  validates_presence_of :verification_value, :unless => Proc.new{|c| c.gateway_customer_profile_id }
+  validates_presence_of :number, :unless => :has_payment_profile?, :on => :create
+  validates_presence_of :verification_value, :unless => :has_payment_profile?, :on => :create
+  
+  def has_payment_profile?
+    gateway_customer_profile_id.present?
+  end
   
   def set_last_digits
     self.last_digits ||= number.to_s.length <= 4 ? number : number.to_s.slice(-4..-1) 

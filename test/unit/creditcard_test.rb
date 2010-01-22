@@ -7,6 +7,7 @@ class CreditcardTest < ActiveSupport::TestCase
     # NOTE: We want to test a real creditcard so we can't use the factory directly since it uses a hacked model to make 
     # testing easier.
     setup { @creditcard = Creditcard.new(Factory.attributes_for(:creditcard)) }
+
     context "save when configured to store credit card info" do
       setup do 
         Spree::Config.set(:store_cc => true, :store_cvv => true)
@@ -19,26 +20,26 @@ class CreditcardTest < ActiveSupport::TestCase
         assert @creditcard.reload.verification_value
       end
     end
-    #context "save (by default)" do
-    #  setup do 
-    #    @creditcard.save
-    #  end
-    #  should "store temporarily store number in memory" do
-    #    assert @creditcard.number
-    #  end
-    #  should "store temporarily store verification_value in memory" do
-    #    assert @creditcard.verification_value
-    #  end
-    #  should "not store number in database" do
-    #    assert !@creditcard.reload.number
-    #  end
-    #  should "not store verification_value in database" do
-    #    assert !@creditcard.reload.verification_value
-    #  end
-    #  should "store a masked version of the number" do
-    #    assert @creditcard.reload.display_number.starts_with?("XXXX-XXXX-XXXX-")
-    #  end
-    #end
+    context "save (by default)" do
+      setup do 
+        @creditcard.save
+      end
+      should "store temporarily store number in memory" do
+        assert @creditcard.number
+      end
+      should "store temporarily store verification_value in memory" do
+        assert @creditcard.verification_value
+      end
+      should "not store number in database" do
+        assert !@creditcard.reload.number
+      end
+      should "not store verification_value in database" do
+        assert !@creditcard.reload.verification_value
+      end
+      should "store a masked version of the number" do
+        assert @creditcard.reload.display_number.starts_with?("XXXX-XXXX-XXXX-")
+      end
+    end
   end
   
   context "authorization success" do
@@ -49,7 +50,6 @@ class CreditcardTest < ActiveSupport::TestCase
       Factory(:line_item, :variant => Factory(:variant), :order => @order, :price => 100.00, :quantity => 1)
       @order.reload
       @order.save
-
       @creditcard.authorize(100)
       @authorization = @creditcard.authorization
     end
@@ -97,7 +97,7 @@ class CreditcardTest < ActiveSupport::TestCase
     should_not_change("CreditcardTxn.count") { CreditcardTxn.count }
     should_not_change("Order.by_state('new').count") { Order.by_state('new').count }
   end
-
+  
   context "purchase success" do
     setup do
       @creditcard = Factory.build(:creditcard, :checkout => Factory(:checkout))

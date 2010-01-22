@@ -11,9 +11,8 @@ module Spree
       response = payment_gateway.authorize((amount * 100).to_i, self, gateway_options)      
       gateway_error_from_response(response) unless response.success?
       
-      # create a creditcard_payment for the amount that was authorized
-      creditcard_payment = checkout.order.creditcard_payments.create(:amount => 0, :creditcard => self)
       # create a transaction to reflect the authorization
+      save
       creditcard_txns.create(
         :amount => amount,
         :response_code => response.authorization,
@@ -34,8 +33,9 @@ module Spree
         response = payment_gateway.capture((authorization.amount * 100).to_i, authorization.response_code, minimal_gateway_options)
       end
       gateway_error_from_response(response) unless response.success?          
-      creditcard_payment = authorization.creditcard_payment
+
       # create a transaction to reflect the capture
+      save
       creditcard_txns.create(
         :amount => authorization.amount,
         :response_code => response.authorization,
@@ -53,8 +53,9 @@ module Spree
         response = payment_gateway.void(authorization.response_code, minimal_gateway_options)
       end      
       gateway_error_from_response(response) unless response.success?
-      creditcard_payment = authorization.creditcard_payment
+
       # create a transaction to reflect the void
+      save
       creditcard_txns.create(
         :amount => authorization.amount,
         :response_code => response.authorization,
@@ -68,10 +69,9 @@ module Spree
       response = payment_gateway.purchase((amount * 100).to_i, self, gateway_options) 
       
       gateway_error_from_response(response) unless response.success?
-            
-      # create a creditcard_payment for the amount that was purchased
-      creditcard_payment = checkout.order.creditcard_payments.create(:amount => amount, :creditcard => self)
+
       # create a transaction to reflect the purchase
+      save
       creditcard_txns.create(
         :amount => amount,
         :response_code => response.authorization,
@@ -90,8 +90,8 @@ module Spree
       end
       gateway_error_from_response(response) unless response.success?
 
-      save
       # create a transaction to reflect the purchase
+      save
       txn = creditcard_txns.create(
         :amount => -amount,
         :response_code => response.authorization,
