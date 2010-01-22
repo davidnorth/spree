@@ -7,15 +7,4 @@ class CreditcardPayment < Payment
 
   alias :txns :creditcard_txns
 
-  def can_capture?
-    txns.present? and txns.last == authorization
-  end
-
-  def capture
-    return unless can_capture?
-    original_auth = authorization
-    creditcard.capture(original_auth)
-    update_attribute("amount", original_auth.amount)
-  end
-
 end

@@ -48,6 +48,10 @@ class Creditcard < ActiveRecord::Base
               :conditions => ["txn_type = ? AND response_code IS NOT NULL", CreditcardTxn::TxnType::AUTHORIZE.to_s],
               :order => 'created_at DESC')
   end
+
+  def can_capture?
+    authorization && txns.count(:conditions => {:txn_type => CreditcardTxn::TxnType::CAPTURE}) == 0
+  end
   
   private
   # Override default behavior of Rails attr_readonly so that its never written to the database (not even on create)
