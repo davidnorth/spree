@@ -31,10 +31,10 @@ class CreditcardTxn < ActiveRecord::Base
   
     def create_creditcard_payment
       if txn_type == CreditcardTxn::TxnType::PURCHASE
-        update_attribute(:creditcard_payment, CreditcardPayment.create!(:order => creditcard.checkout.order, :amount => amount))
+        update_attribute(:creditcard_payment, CreditcardPayment.create!(:order => creditcard.checkout.order, :amount => amount, :creditcard => creditcard))
       else
         # for capture transactions, payment is assigned to the original authorize transaction instead
-        original_txn.update_attribute(:creditcard_payment, CreditcardPayment.create!(:order => creditcard.checkout.order, :amount => amount))
+        original_txn.update_attribute(:creditcard_payment, CreditcardPayment.create!(:order => creditcard.checkout.order, :amount => amount, :creditcard => creditcard))
       end
     end
   
