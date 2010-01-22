@@ -73,6 +73,8 @@ def create_complete_order
   @shipment.save
   @order.save
   @order.reload
+  @order.save
+  @order
 end
 
 def add_capturable_card(order)
