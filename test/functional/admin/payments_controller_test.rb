@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class Admin::PaymentsControllerTest < ActionController::TestCase
-  fixtures :gateways
+  fixtures :gateways, :countries
 
   context "given order" do
     setup do
