@@ -56,15 +56,15 @@ class AuthorizeNetCimTest < Test::Unit::TestCase
     end
   end
   
-  context "create_customer_profile" do
+  context "create_profile" do
     should "create a customer profile sucessfully" do
-      result = @gateway.send(:create_customer_profile, @creditcard, @creditcard.gateway_options)
-      assert result.is_a?(Hash)
-      assert_equal "123", result[:customer_profile_id]
+      assert @gateway.create_profile(@creditcard, @creditcard.gateway_options)
+      @creditcard.reload
+      assert_equal "123", @creditcard.gateway_customer_profile_id
     end
     should "raise a gateway error if there is a problem creating profile" do
       ActiveMerchant::Billing::AuthorizeNetCimGateway.force_failure = true
-      assert_raise(Spree::GatewayError) { @gateway.send(:create_customer_profile, @creditcard, @creditcard.gateway_options) }
+      assert_raise(Spree::GatewayError) { @gateway.create_profile(@creditcard, @creditcard.gateway_options) }
     end
   end
 
