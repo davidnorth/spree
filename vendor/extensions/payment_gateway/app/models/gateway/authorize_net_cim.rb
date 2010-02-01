@@ -39,7 +39,9 @@ class Gateway::AuthorizeNetCim < Gateway
     options = options_for_create_customer_profile(creditcard, gateway_options)
     response = cim_gateway.create_customer_profile(options)
     if response.success?
-      creditcard.update_attributes(:gateway_customer_profile_id => response.params["customer_profile_id"], :gateway_payment_profile_id => response.params["customer_payment_profile_id_list"].values.first)
+      creditcard.gateway_customer_profile_id = response.params["customer_profile_id"]
+      creditcard.gateway_payment_profile_id = response.params["customer_payment_profile_id_list"].values.first
+      creditcard.send(:update_without_callbacks)
     else
       creditcard.gateway_error(response)
     end
