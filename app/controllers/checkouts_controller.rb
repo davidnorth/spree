@@ -19,7 +19,7 @@ class CheckoutsController < Spree::BaseController
   edit.before :edit_hooks, :set_user
   delivery.edit_hook :load_available_methods
   address.edit_hook :set_ip_address
-  payment.edit_hook :load_available_integrations
+  payment.edit_hook :load_available_payment_methods
 
   # customized verison of the standard r_c update method (since we need to handle gateway errors, etc)
   def update
@@ -100,7 +100,6 @@ class CheckoutsController < Spree::BaseController
       end
       @object.ship_address ||= Address.default
       @object.bill_address     ||= Address.default
-      @object.creditcard       ||= Creditcard.new(:month => Date.today.month, :year => Date.today.year)
     end
     @object.email ||= params[:checkout][:email] if params[:checkout]
     @object.email ||= current_user.email if current_user
@@ -138,8 +137,8 @@ class CheckoutsController < Spree::BaseController
     @checkout.shipping_method_id ||= @available_methods.first[:id] unless @available_methods.empty?
   end
 
-  def load_available_integrations
-    @billing_integrations = BillingIntegration.find(:all, :conditions => {:active => true, :environment => ENV['RAILS_ENV']})
+  def load_available_payment_methods 
+    @payment_methods = PaymentMethod.available
   end
 
   def set_ip_address

@@ -37,4 +37,8 @@ class Gateway < PaymentMethod
 	  false
   end
   
+  def method_type
+    "gateway"
+  end
+  
 end
