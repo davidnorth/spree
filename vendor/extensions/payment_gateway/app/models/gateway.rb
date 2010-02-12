@@ -5,6 +5,10 @@ class Gateway < PaymentMethod
   
   preference :server, :string, :default => 'test'
   preference :test_mode, :boolean, :default => true
+
+  def payment_source_class
+    Creditcard
+  end
   
   # instantiates the selected gateway and configures with the options stored in the database
   def self.current
