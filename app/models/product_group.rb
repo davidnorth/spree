@@ -31,7 +31,7 @@ class ProductGroup < ActiveRecord::Base
   validates_associated :product_scopes
 
   before_save :set_permalink
-  before_save :update_memberships
+  before_update :update_memberships
 
   has_and_belongs_to_many :cached_products, :class_name => "Product"
   # name
