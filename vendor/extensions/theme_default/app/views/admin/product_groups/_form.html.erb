@@ -16,61 +16,53 @@
   <% end %>
 </fieldset>
 
-<div class="product-scopes">
-  <% [:search, :taxon, :price, :values].each do |group_name| %>
-    <% scopes = Scopes::Product::SCOPES[group_name] %>
-    <fieldset>
-      <legend><%= t(:name, :scope => [:product_scopes, :groups, group_name]) %></legend>
-      <% unless t(:description, :scope => [:product_scopes, :groups, group_name], :default => "").blank? %>
-        <p><%= t(:description, :scope => [:product_scopes, :groups, group_name]) %></p>
-      <% end %>
 
-      <ul>
-        <% scopes.each_pair do |scope_name, arguments| %>
-          <li>
-            <%= check_box_tag("product_scope[#{scope_name}][active]", "1", scopes_hash[scope_name.to_s]) %>
-            <%= label_tag("product_scope[#{scope_name}][active]", t(:name, :scope => [:product_scopes, :scopes, scope_name])) %>
-            <br />
-            <% arguments.each_with_index do |arg_name, i| %>
-              <div class="scope-argument">
-                <%= label_tag("product_scope[#{scope_name}][arguments][]", t(arg_name, :scope => [:product_scopes, :scopes, scope_name, :args])) %>
-                <br />
-                <%= text_field_tag("product_scope[#{scope_name}][arguments][]", scopes_hash[scope_name.to_s] && scopes_hash[scope_name.to_s][i]) %>
-              </div>
-            <% end %>
-            <% unless t(:description, :scope => [:product_scopes, :scopes, scope_name], :default => "").blank? %>
-              <p><%= t(:description, :scope => [:product_scopes, :scopes, scope_name], :default => "") %></p>
-            <% end %>
-          </li>
-        <% end %>
-        <li style="clear: both; list-style: none;"></li>
-      </ul>
-    </fieldset>
-  <% end %>
-</div>
 <fieldset>
-  <legend><%= t(:preview) %></legend>
-  <div id="products-preview">
+  <legend><%= t(:scopes) %></legend>
 
-  </div>
+  <table class="index">
+  <% f.fields_for :product_scopes do |scope_form| %>
+  <% product_scope = scope_form.object -%>
+    <% unless Scopes::Product::ORDERING.include?(product_scope.name.to_sym) -%>
+    <tr>
+      <td>
+        <label><%= t(:name, :scope => [:product_scopes, :scopes, product_scope.name]) %></label>
+        <% if description = t(:description, :scope => [:product_scopes, :scopes, product_scope.name], :default => "") and description.present? %>
+          <br /><%= description %>
+        <% end %>
+      </td>
+      <td>
+
+        <% if arguments = Scopes::Product.arguments_for_scope_name(product_scope.name.strip) %>
+          <% arguments.each_with_index do |argument, i| %>
+            <label><%= t(argument, :scope => [:product_scopes, :scopes, product_scope.name, :args]) %></label>
+            <%= text_field_tag "product_group[product_scopes_attributes][#{product_scope}][arguments][]", product_scope.arguments[i] %>
+          <% end %>
+        <% end %>
+      
+      </td>
+    </tr>
+    <% end -%>
+  <% end -%>
+  </table>
+    
+  <% 
+    options = 
+      grouped_options_for_select(
+        Scopes::Product::SCOPES.map do |group_name, scopes|  
+          [ 
+            t(:name, :scope => [:product_scopes, :groups, group_name]), 
+            scopes.keys.map do |scope_name|
+              [ t(:name, :scope => [:product_scopes, :scopes, scope_name]), scope_name]
+            end
+          ]
+        end
+      ) 
+  %>
+  <p>
+    <%= select_tag(:scope_name, options) %>
+    <input type="submit" value="<%= t('add') %>" />
+  </p>
+  
 </fieldset>
 
-<%= button t("preview"), nil, "submit", :id => "preview"  %>
-
-<% javascript_tag do %>
-  
-    jQuery("#preview").click(function(){
-    
-      jQuery.ajax({
-        data: $("#product-group-form :input[name!='_method']").serialize(), 
-        success: function(request){
-          jQuery('#products-preview').html(request);
-        }, 
-        type: 'post', 
-        url: '/admin/product_groups/preview'
-      });
-      
-      return(false)
-    });
- 
-<% end %>

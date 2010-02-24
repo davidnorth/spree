@@ -10,6 +10,9 @@ class ProductScope < ActiveRecord::Base
   belongs_to :product_group
   serialize :arguments
 
+  named_scope :not_ordering, :conditions => ["name NOT IN (?)", Scopes::Product::ORDERING.map(&:to_s)]
+  
+  
   extend ::Scopes::Dynamic
 
   # Get all products with this scope

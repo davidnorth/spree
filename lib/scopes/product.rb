@@ -38,6 +38,12 @@ module Scopes::Product
     :descend_by_master_price,
     :by_popularity,
   ]
+  
+  def self.arguments_for_scope_name(name)
+    if group = Scopes::Product::SCOPES.detect{|k,v| v[name.to_sym]}
+      group[1][name.to_sym]
+    end
+  end
 
   # default product scope only lists available and non-deleted products
   ::Product.named_scope :active,      lambda { |*args|
