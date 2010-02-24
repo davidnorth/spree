@@ -19,11 +19,8 @@
 
 <fieldset>
   <legend><%= t(:scopes) %></legend>
-
   <table class="index">
-  <% f.fields_for :product_scopes do |scope_form| %>
-  <% product_scope = scope_form.object -%>
-    <% unless Scopes::Product::ORDERING.include?(product_scope.name.to_sym) -%>
+  <% for product_scope in @product_group.product_scopes.not_ordering %>
     <tr>
       <td>
         <label><%= t(:name, :scope => [:product_scopes, :scopes, product_scope.name]) %></label>
@@ -32,20 +29,21 @@
         <% end %>
       </td>
       <td>
-
         <% if arguments = Scopes::Product.arguments_for_scope_name(product_scope.name.strip) %>
           <% arguments.each_with_index do |argument, i| %>
             <label><%= t(argument, :scope => [:product_scopes, :scopes, product_scope.name, :args]) %></label>
-            <%= text_field_tag "product_group[product_scopes_attributes][#{product_scope}][arguments][]", product_scope.arguments[i] %>
+            <%= hidden_field_tag "product_group[product_scopes_attributes][][id]", product_scope.id %>
+            <%= text_field_tag "product_group[product_scopes_attributes][][arguments][]", (product_scope.arguments || [])[i] %>
           <% end %>
         <% end %>
-      
+      </td>
+      <td>
+        <%= link_to_with_icon 'cross', '', '#' %>
       </td>
     </tr>
-    <% end -%>
   <% end -%>
   </table>
-    
+
   <% 
     options = 
       grouped_options_for_select(
@@ -63,6 +61,7 @@
     <%= select_tag(:scope_name, options) %>
     <input type="submit" value="<%= t('add') %>" />
   </p>
+
   
 </fieldset>
 

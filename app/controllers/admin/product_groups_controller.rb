@@ -1,9 +1,9 @@
 class Admin::ProductGroupsController < Admin::BaseController
-  before_filter :set_nested_product_scopes, :only => [:create, :update, :preview]
+#  before_filter :set_nested_product_scopes, :only => [:create, :update, :preview]
   before_filter :products_submenu
 
   resource_controller
-
+  
   def products_submenu
     render_to_string :partial => 'admin/shared/product_sub_menu'
   end
