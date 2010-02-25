@@ -6,9 +6,6 @@
 
   <% form_for(@product_group, :url => object_url, :html => { :id => 'product-group-form', :method => :put, 'data-remote' => true }) do |f| %>
 
-    <% scopes_hash = @product_group.scopes_to_hash %>
-    <% order_scope = scopes_hash.keys.select{|s| Scopes::Product::ORDERING.include?(s)}.last %>
-
       <% f.field_container :name do %>
         <%= f.label :name, t("name") %><br />
         <%= f.text_field :name %>
@@ -17,16 +14,12 @@
 
       <% f.field_container :order_scope do %>
         <%= f.label :order_scope, t("sort_ordering") %><br />
-        <%= select_tag("order_scope", options_for_select(
-                Scopes::Product::ORDERING.collect{|p| [ t(:name, :scope =>[:product_scopes, :scopes, p]), p ] }, order_scope
-        )) %>
+        <%= f.select(:order_scope, Scopes::Product::ORDERING.collect{|p| [ t(:name, :scope =>[:product_scopes, :scopes, p]), p.to_s ] }) %>
       <% end %>
 
       <table id="product_scopes">
         <%= render :partial => 'product_scope', :collection => @product_group.product_scopes.not_ordering %>
       </table>
-
-
 
     <%=  button t("update") %>
 

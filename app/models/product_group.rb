@@ -174,4 +174,22 @@ class ProductGroup < ActiveRecord::Base
   def to_s
     "<ProductGroup" + (id && "[#{id}]").to_s + ":'#{to_url}'>"
   end
+  
+  
+  def order_scope
+    if scope = product_scopes.ordering.first
+      scope.name
+    end
+  end
+  def order_scope=(scope_name)
+    puts "order_scope= = #{scope_name}"
+    if scope = product_scopes.ordering.first
+      puts 'update existing order scope'
+      scope.update_attribute(:name, scope_name)
+    else
+      puts ' - build new order scope'
+      product_scopes.build(:name => scope_name, :arguments => [])
+    end    
+  end
+  
 end
