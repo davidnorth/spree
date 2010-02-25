@@ -27,14 +27,17 @@ class ProductScope < ActiveRecord::Base
     another_scope.send(self.name, *self.arguments)
   end
 
+  def before_validation_on_create
+    # Add default empty arguments so scope validates and errors aren't caused when previewing it
+    if args = Scopes::Product.arguments_for_scope_name(name)
+      self.arguments ||= ['']*args.length
+    end
+  end
+  
   # checks validity of the named scope (if it's safe and can be applied on Product)
   def validate
     errors.add(:name, "is not propper scope name") unless Product.condition?(self.name)
-  end
-
-  # checks validity of the named scope (if it's safe and can be applied on Product)
-  def validate_on_update
-    apply_on(Product)
+    apply_on(Product).inspect
   rescue Exception
     errors.add(:arguments, "arguments are incorrect")
   end
