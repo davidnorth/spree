@@ -1,4 +1,5 @@
-<% form_for(@product_group, :url => object_url, :html => { :id => 'product-group-form', :method => :put }) do |f| %>
+<% render 'admin/shared/product_sub_menu' %>
+<% form_for(@product_group, :url => object_url, :html => { :id => 'product-group-form', :method => :put, 'data-remote' => true }) do |f| %>
 
   <% scopes_hash = @product_group.scopes_to_hash %>
   <% order_scope = scopes_hash.keys.select{|s| Scopes::Product::ORDERING.include?(s)}.last %>
@@ -18,32 +19,10 @@
     <% end %>
   </fieldset>
 
-
   <fieldset>
     <legend><%= t('scopes') %></legend>
-    <table class="index">
-    <% for product_scope in @product_group.product_scopes.not_ordering %>
-      <tr id="<%= dom_id product_scope %>">
-        <td>
-          <label><%= t(:name, :scope => [:product_scopes, :scopes, product_scope.name]) %></label>
-          <% if description = t(:description, :scope => [:product_scopes, :scopes, product_scope.name], :default => "") and description.present? %>
-            <br /><%= description %>
-          <% end %>
-        </td>
-        <td>
-          <% if arguments = Scopes::Product.arguments_for_scope_name(product_scope.name.strip) %>
-            <% arguments.each_with_index do |argument, i| %>
-              <label><%= t(argument, :scope => [:product_scopes, :scopes, product_scope.name, :args]) %></label>
-              <%= hidden_field_tag "product_group[product_scopes_attributes][][id]", product_scope.id %>
-              <%= text_field_tag "product_group[product_scopes_attributes][][arguments][]", (product_scope.arguments || [])[i] %>
-            <% end %>
-          <% end %>
-        </td>
-        <td>
-          <%= link_to_with_icon 'cross', '', admin_product_group_product_scope_path(@product_group, product_scope), 'data-remote' => true, 'data-method' => 'delete' %>
-        </td>
-      </tr>
-    <% end -%>
+    <table class="index" id="product_scopes">
+      <%= render :partial => 'product_scope', :collection => @product_group.product_scopes.not_ordering %>
     </table>
   </fieldset>
 
@@ -54,7 +33,7 @@
 <% end %>
 
 
-<% form_tag(admin_product_group_product_scopes_path(@product_group)) do |f| %>
+<% form_tag(admin_product_group_product_scopes_path(@product_group), 'data-remote' => true) do |f| %>
 
   <% 
   options = 

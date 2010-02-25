@@ -1,6 +1,4 @@
 class Admin::ProductGroupsController < Admin::BaseController
-  before_filter :products_submenu
-
   resource_controller
   
   create.response do |wants| 
@@ -8,6 +6,7 @@ class Admin::ProductGroupsController < Admin::BaseController
   end
   update.response do |wants| 
     wants.html { redirect_to edit_object_path }
+    wants.js { render :action => 'update', :layout => false}
   end
 
   def preview
@@ -40,8 +39,4 @@ class Admin::ProductGroupsController < Admin::BaseController
       )
     end
 
-    def products_submenu
-      render_to_string :partial => 'admin/shared/product_sub_menu'
-    end
-  
 end
