@@ -30,10 +30,15 @@ class ProductScope < ActiveRecord::Base
   # checks validity of the named scope (if it's safe and can be applied on Product)
   def validate
     errors.add(:name, "is not propper scope name") unless Product.condition?(self.name)
+  end
+
+  # checks validity of the named scope (if it's safe and can be applied on Product)
+  def validate_on_update
     apply_on(Product)
   rescue Exception
     errors.add(:arguments, "arguments are incorrect")
   end
+
 
   def to_sentence
     result = I18n.t(:sentence, :scope => [:product_scopes, :scopes, self.name], :default => "")

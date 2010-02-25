@@ -12,7 +12,7 @@ class Admin::ProductScopesController < Admin::BaseController
   end
   destroy.response do |wants| 
     wants.html { redirect_to edit_admin_product_group_path(parent_object) }
-    wants.js {}
+    wants.js { render :action => 'destroy', :layout => false}
   end
   
 end
