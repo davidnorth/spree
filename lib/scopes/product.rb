@@ -52,6 +52,7 @@ module Scopes::Product
   }
 
   ::Product.named_scope :keywords, lambda{|query|
+    return {} if query.blank?
     Spree::Config.searcher.get_products_conditions_for(query)
   }
 
@@ -126,9 +127,12 @@ module Scopes::Product
   # a scope that finds all products having property specified by name, object or id
   Product.named_scope :with_option_value, lambda {|option, value|
     option_type_id = case option
-    when String     then OptionType.find_by_name(option).id
-    when OptionType then option.id
-    else                 option.to_i
+    when String
+      option_type = OptionType.find_by_name(option) || option.to_i
+    when OptionType
+      option.id
+    else
+      option.to_i
     end
     conditions = [
       "option_values.name = ? AND option_values.option_type_id = ?",
