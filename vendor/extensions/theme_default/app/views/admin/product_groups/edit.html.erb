@@ -10,13 +10,13 @@
     <% order_scope = scopes_hash.keys.select{|s| Scopes::Product::ORDERING.include?(s)}.last %>
 
       <% f.field_container :name do %>
-        <%= f.label :name, t("name") %>
+        <%= f.label :name, t("name") %><br />
         <%= f.text_field :name %>
         <%= f.error_message_on :name %>
       <% end %>
 
       <% f.field_container :order_scope do %>
-        <%= f.label :order_scope, t("sort_ordering") %>
+        <%= f.label :order_scope, t("sort_ordering") %><br />
         <%= select_tag("order_scope", options_for_select(
                 Scopes::Product::ORDERING.collect{|p| [ t(:name, :scope =>[:product_scopes, :scopes, p]), p ] }, order_scope
         )) %>
@@ -57,3 +57,7 @@
 
 </fieldset>
 
+
+<fieldset id="preview_container">
+  <%= render 'preview' %>
+</fieldset>
