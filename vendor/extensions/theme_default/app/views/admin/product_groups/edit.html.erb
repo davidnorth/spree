@@ -40,7 +40,7 @@
           <% end %>
         </td>
         <td>
-          <%= link_to_with_icon 'cross', '', admin_product_group_product_scope_path(@product_group, product_scope), :method => :delete, :confirm => 'Are you sure' %>
+          <%= link_to_with_icon 'cross', '', admin_product_group_product_scope_path(@product_group, product_scope), 'data-remote' => true, 'data-method' => 'delete' %>
         </td>
       </tr>
     <% end -%>
