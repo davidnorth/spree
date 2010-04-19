@@ -307,10 +307,6 @@ en-US:
   count_of_reduced_by: "count of '{{name}}' reduced by {{count}}"
   country: Country
   country_based: "Country Based"
-  coupon: Coupon
-  coupon_code: Coupon Code
-  coupons: Coupons
-  coupons_description: Manage coupons
   create: Create
   create_a_new_account: "Create a new account"
   create_user_account: Create User Account
@@ -339,7 +335,6 @@ en-US:
   edit: Edit
   editing_billing_integration: Editing Billing Integration
   editing_category: "Editing Category"
-  editing_coupon: Editing Coupon
   editing_option_type: "Editing Option Type"
   editing_option_types: "Editing Option Types"
   editing_payment_method: Editing Payment Method
@@ -477,7 +472,6 @@ en-US:
   new_adjustment: "New Adjustment"
   new_billing_integration: New Billing Integration
   new_category: "New category"
-  new_coupon: New Coupon
   new_customer: "New Customer"
   new_image: "New Image"
   new_option_type: "New Option Type"

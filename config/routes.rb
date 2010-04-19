@@ -67,7 +67,6 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :taxons
 
   map.namespace :admin do |admin|
-    admin.resources :coupons
     admin.resources :zones
     admin.resources :users
     admin.resources :countries, :has_many => :states

@@ -1,4 +1,4 @@
-class Admin::CouponsController < Admin::BaseController
+class Admin::PromotionsController < Admin::BaseController
   resource_controller         
   before_filter :load_data
 

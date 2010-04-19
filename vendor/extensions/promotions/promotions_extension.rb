@@ -6,17 +6,11 @@ class PromotionsExtension < Spree::Extension
   description "Describe your extension here"
   url "http://yourwebsite.com/promotions"
 
-  # Please use promotions/config/routes.rb instead for extension routes.
-
-  # def self.require_gems(config)
-  #   config.gem "gemname-goes-here", :version => '1.2.3'
-  # end
-  
   def activate
 
-    # make your helper avaliable in all views
-    # Spree::BaseController.class_eval do
-    #   helper YourHelper
-    # end
+    Order.class_eval do
+      has_many :promotion_credits, :extend => Order::Totaling, :order => :position
+    end
+
   end
 end

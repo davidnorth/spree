@@ -13,4 +13,4 @@ unless defined? SPREE_ROOT
 end
 require "#{SPREE_ROOT}/test/test_helper"
 
-require 'factories/coupon_factory.rb'
+require 'factories/promotion_factory.rb'
