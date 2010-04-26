@@ -7,9 +7,6 @@ class PromotionRule < ActiveRecord::Base
     raise 'eligible? should be implemented in a sub-class of Promotion::PromotionRule'
   end
 
-
-
-
   @rule_classes = nil
   @@rule_classes = Set.new
   def self.register

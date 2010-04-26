@@ -5,5 +5,5 @@ class Promotion::Rules::ItemTotal < PromotionRule
   preference :operator, :string, :default => '>'
   
   OPERATORS = ['>', '>=']
-  
+
 end

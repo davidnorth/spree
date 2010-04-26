@@ -340,7 +340,6 @@ en-US:
   editing_payment_method: Editing Payment Method
   editing_product: "Editing Product"
   editing_product_group: "Editing Product Group"
-  editing_promotion: Editing Promotion
   editing_property: "Editing Property"
   editing_prototype: "Editing Prototype"
   editing_shipping_category: "Editing Shipping Category"
@@ -483,7 +482,6 @@ en-US:
   new_payment_method: New Payment Method
   new_product: "New Product"
   new_product_group: New Product Group
-  new_promotion: New Promotion
   new_property: "New Property"
   new_prototype: "New Prototype"
   new_return_authorization: New Return Authorization
@@ -705,9 +703,6 @@ en-US:
         sentence: with property <em>%s</em> and value <em>%s</em>
   products: Products
   products_with_zero_inventory_display: "Products with a zero inventory will {{not}} be displayed"
-  promotion: Promotion
-  promotions: Promotions
-  promotions_description: Manage offers and coupons with promotions
   properties: Properties
   property: Property
   prototype: Prototype
