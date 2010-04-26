@@ -9,10 +9,10 @@ class Admin::PromotionsController < Admin::BaseController
   private       
   def build_object
     @object ||= end_of_association_chain.send parent? ? :build : :new, object_params 
-    @object.calculator = params[:coupon][:calculator_type].constantize.new if params[:coupon]
+    @object.calculator = params[:promotion][:calculator_type].constantize.new if params[:promotion]
   end
   
   def load_data     
-    @calculators = Coupon.calculators
+    @calculators = Promotion.calculators
   end  
 end
