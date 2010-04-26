@@ -10,7 +10,12 @@ class PromotionsExtension < Spree::Extension
 
     Order.class_eval do
       has_many :promotion_credits, :extend => Order::Totaling, :order => :position
+      def products
+        line_items.map {|li| li.variant.product}
+      end
     end
+    
+    [Promotion::Rules::ItemTotal, Promotion::Rules::Product, Promotion::Rules::User].each &:register
 
   end
 end

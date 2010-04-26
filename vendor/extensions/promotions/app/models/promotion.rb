@@ -2,6 +2,11 @@ class Promotion < ActiveRecord::Base
   has_many  :promotion_credits,    :as => :adjustment_source
   has_calculator
   alias credits promotion_credits
+  
+  has_many :promotion_rules
+
+  MATCH_POLICIES = %w(any all)
+  preference :match_policy, :string, :default => MATCH_POLICIES.first
 
   validates_presence_of :code
   
@@ -15,7 +20,6 @@ class Promotion < ActiveRecord::Base
     expires_at && Time.now > expires_at || 
     usage_limit && promotion_credits.with_order.count >= usage_limit
   end
-
 
   def create_discount(order)
     return if order.promotion_credits.reload.detect { |credit| credit.adjustment_source_id == self.id }
