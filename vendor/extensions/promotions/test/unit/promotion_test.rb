@@ -11,15 +11,15 @@ class PromotionTest < ActiveSupport::TestCase
     
     context "expires_at < now" do
       setup { @promotion.expires_at = Time.now - 1.day }
-      should "not be eligible" do
-        assert !@promotion.eligible?(Factory(:order))
+      should "not be expired" do
+        assert @promotion.expired?
       end
     end
     
     context "expires_at > now" do
       setup { @promotion.expires_at = Time.now + 1.day }
-      should "be eligible" do
-        assert @promotion.eligible?(Factory(:order))
+      should "not be expired" do
+        assert !@promotion.expired?
       end
     end
     
@@ -27,28 +27,28 @@ class PromotionTest < ActiveSupport::TestCase
       setup { @promotion.usage_limit = 1 }
       context "when coupon has already been used" do
         setup { @promotion.create_discount(Factory(:order)) }
-        should "not be eligible" do
-          assert !@promotion.eligible?(Factory(:order))
+        should "be expired" do
+          assert @promotion.expired?
         end
       end
       context "when coupon has not yet been used" do
-        should "be eligible" do
-          assert @promotion.eligible?(Factory(:order))
+        should "not be expired" do
+          assert !@promotion.expired?
         end
       end
     end
     
     context "with starts_at > now" do
       setup { @promotion.starts_at = Time.now + 1.day }
-      should "not be eligible" do
-        assert !@promotion.eligible?(Factory(:order))
+      should "be expired" do
+        assert @promotion.expired?
       end
     end
 
     context "with starts_at < now" do
       setup { @promotion.starts_at = Time.now - 1.day }
-      should "be eligible" do
-        assert @promotion.eligible?(Factory(:order))
+      should "not be expired" do
+        assert !@promotion.expired?
       end
     end
     
