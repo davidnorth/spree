@@ -4,7 +4,7 @@
 class Promotion::Rules::Product < PromotionRule
 
   belongs_to :product_group
-  has_and_belongs_to_many :products, :foreign_key => 'product_rule_id'
+  has_and_belongs_to_many :products, :class_name => '::Product', :join_table => 'products_promotion_rules', :foreign_key => 'promotion_rule_id'
 
   MATCH_POLICIES = %w(any all)
   preference :match_policy, :string, :default => MATCH_POLICIES.first
