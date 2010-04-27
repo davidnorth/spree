@@ -1,6 +1,17 @@
 ---
 en-US:
+  add_rule: Add rule
   editing_promotion: Editing Promotion
   new_promotion: New Promotion
   promotions: Promotions
   promotions_description: Manage offers and coupons with promotions
+  promotion_rule_types:
+    user:
+      name: User
+      description: Order from specified user
+    product: 
+      name: Product(s)
+      description: Order includes specified product(s)
+    item_total:
+      name: Item total
+      description: Order total meets these criteria

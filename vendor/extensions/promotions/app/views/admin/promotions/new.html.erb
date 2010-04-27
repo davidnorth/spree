@@ -2,6 +2,16 @@
 <%= error_messages_for :promotion %>
 
 <% form_for(:promotion, :url => collection_url) do |f| %>
-  <%= render :partial => "form", :locals => { :f => f } %>
+
+
+  <fieldset>
+    <% f.field_container :description do %>
+      <%= f.label :description %><br />
+      <%= f.text_field :description %>
+    <% end %>
+  </fieldset>
+
+  <%= render "admin/shared/calculator_fields", :f => f %>
+
   <%= render :partial => "admin/shared/new_resource_links" %>
 <% end %>

@@ -4,12 +4,11 @@ class Promotion < ActiveRecord::Base
   alias credits promotion_credits
   
   has_many :promotion_rules
+  alias_method :rules, :promotion_rules
 
   MATCH_POLICIES = %w(any all)
   preference :match_policy, :string, :default => MATCH_POLICIES.first
 
-  validates_presence_of :code
-  
   def eligible?(order)
     # TODO - evalulate rules
     !expired?

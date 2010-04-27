@@ -16,5 +16,9 @@ class PromotionRule < ActiveRecord::Base
   def self.rule_classes
     @@rule_classes.to_a
   end
+  
+  def self.rule_class_names
+    PromotionRule.rule_classes.map(&:name)
+  end
 
 end

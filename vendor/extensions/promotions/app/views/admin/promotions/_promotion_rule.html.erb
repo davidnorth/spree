@@ -1,0 +1,6 @@
+<div class="promotion-rule" id="<%= dom_id promotion_rule %>">
+  Rule: <%= promotion_rule.id %>, <%= promotion_rule.class %>
+
+  <%= link_to_with_icon 'cross', '', admin_promotion_promotion_rule_path(@promotion, promotion_rule), 'data-remote' => true, 'data-method' => 'delete' %>
+
+</div>
