@@ -26,3 +26,10 @@
   <% end %>
   
 </fieldset>
+
+
+
+<% content_for :head do %>
+  <%= javascript_include_tag 'admin/promotions.js' %>
+  <%= stylesheet_link_tag 'admin/promotions.css' %>
+<% end %>
