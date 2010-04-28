@@ -1,4 +1,4 @@
-class Promotion::Credit < ::Credit
+class PromotionCredit < ::Credit
   named_scope :with_order, :conditions => "order_id IS NOT NULL"
 
   def calculate_adjustment

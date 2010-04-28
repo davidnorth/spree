@@ -5,5 +5,5 @@
 ::Credit
 ::TaxCharge
 ::ShippingCharge
-::Promotion::Credit
+::PromotionCredit
 ::ReturnAuthorizationCredit

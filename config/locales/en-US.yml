@@ -503,6 +503,7 @@ en-US:
   no_match_found: "No Match Found"
   no_payment_methods_available: "Can't check out, no payment methods are configured for this environment"
   no_products_found: "No products found"
+  no_results: "No results"
   no_shipping_methods_available: "No shipping methods available, please change your address and try again."
   no_user_found: "No user was found with that email address"
   none: None
@@ -755,6 +756,7 @@ en-US:
   scopes: Scopes
   search: Search
   search_results: "Search results for '{{keywords}}'"
+  searching: Searching
   secure_connection_type: Secure Connection Type
   secure_creditcard: Secure Creditcard
   select: Select
@@ -870,6 +872,7 @@ en-US:
   tree: Tree
   try_again: "Try Again"
   type: Type
+  type_to_search: Type to search
   unable_ship_method: "Unable to generate shipping methods due to a server error."
   unable_to_authorize_credit_card: "Unable to Authorize Credit Card"
   unable_to_capture_credit_card: "Unable to Capture Credit Card"
