@@ -1,0 +1,21 @@
+.promotion-rule {
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  padding: 8px 40px 8px 10px;
+  background-color: #eee;
+  border-bottom: 1px solid #bbb;
+  margin-bottom: 4px;
+  position: relative;
+}
+.promotion-rule .delete {
+  display: block;
+  position: absolute;
+  right: 6px;
+  top: -10px;
+  margin-top: 20px;
+}
+
+
+.products_rule_products_source_field label {
+  display: inline;
+}

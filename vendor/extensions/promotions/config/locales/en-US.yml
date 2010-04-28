@@ -15,3 +15,12 @@ en-US:
     item_total:
       name: Item total
       description: Order total meets these criteria
+  product_rule:
+    choose_products: Choose products
+    label: "Order must contain {{select}} of these products"
+    match_any: at least one
+    match_all: all
+    product_source:
+      group: From product group
+      manual: Manually choose
+      

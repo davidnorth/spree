@@ -13,5 +13,13 @@ class Promotion::Rules::Product < PromotionRule
   def eligible_products
     product_group ? product_group.products : products
   end
+  
+
+  def product_ids_string
+    product_ids.join(',')
+  end
+  def product_ids_string=(s)
+    product_ids = s.to_s.split(',').map(&:strip)
+  end
     
 end
