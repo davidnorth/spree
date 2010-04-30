@@ -4,6 +4,7 @@ class Promotion < ActiveRecord::Base
   alias credits promotion_credits
   
   has_many :promotion_rules
+  accepts_nested_attributes_for :promotion_rules
   alias_method :rules, :promotion_rules
 
   MATCH_POLICIES = %w(any all)

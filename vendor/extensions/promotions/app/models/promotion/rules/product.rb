@@ -15,11 +15,18 @@ class Promotion::Rules::Product < PromotionRule
   end
   
 
+  def products_source=(source)
+    if source.to_s == 'manual'
+      self.product_group_id = nil
+    end
+  end
+  
   def product_ids_string
     product_ids.join(',')
   end
   def product_ids_string=(s)
-    product_ids = s.to_s.split(',').map(&:strip)
+    self.product_ids = s.to_s.split(',').map(&:strip)
+    puts self.product_ids.inspect
   end
     
 end
