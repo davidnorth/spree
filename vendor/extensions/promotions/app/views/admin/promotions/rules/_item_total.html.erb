@@ -1,0 +1,7 @@
+<p class="field">
+  <label>
+    Item total must be
+    <%= select_tag "#{param_prefix}[operator]", options_for_select(['greater than', 'greater than or equal to']) %>
+    <%= text_field_tag "#{param_prefix}[preferred_item_total]", '100.00', :size => 10 %>
+  </label>
+</p>

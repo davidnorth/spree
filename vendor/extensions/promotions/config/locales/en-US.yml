@@ -1,14 +1,15 @@
 ---
 en-US:
-  add_rule: Add rule
+  add_rule_of_type: Add rule of type
   editing_promotion: Editing Promotion
   new_promotion: New Promotion
+  no_rules_added: No rules added
   promotions: Promotions
   promotions_description: Manage offers and coupons with promotions
   promotion_rule_types:
     user:
       name: User
-      description: Order from specified user
+      description: Available only to the specified users
     product: 
       name: Product(s)
       description: Order includes specified product(s)
@@ -23,4 +24,6 @@ en-US:
     product_source:
       group: From product group
       manual: Manually choose
+  user_rule:
+    choose_users: Choose users
       

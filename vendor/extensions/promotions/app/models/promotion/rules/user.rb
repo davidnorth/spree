@@ -5,4 +5,11 @@ class Promotion::Rules::User < PromotionRule
     order.user == user
   end
 
+
+  def user_ids_string
+    ''
+  end
+  def user_ids_string=(s)
+  end
+
 end
