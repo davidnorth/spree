@@ -10,12 +10,11 @@
   <legend>Rules</legend>
     
   <% form_for(@promotion, :url => object_url, :html => { :method => :put }) do |f| %>
-    <!--
     <p>
-      <label><%= f.radio_button :preferred_match_policy, 'any' %> Match any of these rules</label> &nbsp;
-      <label><%= f.radio_button :preferred_match_policy, 'all' %> Match all rules</label>
+      <% for policy in Promotion::MATCH_POLICIES %>
+        <label><%= f.radio_button :match_policy, policy %> <%= t "promotion_form.match_policies.#{policy}" %></label> &nbsp;
+      <% end %>
     </p>
-    -->
     <div id="rules" class="filter_list">
       <% if @promotion.rules.any? %>
         <%= render :partial => 'promotion_rule', :collection => @promotion.rules %>

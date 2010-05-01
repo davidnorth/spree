@@ -5,6 +5,10 @@ en-US:
   new_promotion: New Promotion
   no_rules_added: No rules added
   promotions: Promotions
+  promotion_form:
+    match_policies:
+      all: Match any of these rules
+      any: Match all of these rules
   promotions_description: Manage offers and coupons with promotions
   promotion_rule_types:
     user:
@@ -26,4 +30,7 @@ en-US:
       manual: Manually choose
   user_rule:
     choose_users: Choose users
-      
+  item_total_rule:
+    operators:
+      gt: greater than
+      gte: greater than or equal to

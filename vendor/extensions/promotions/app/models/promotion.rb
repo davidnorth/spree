@@ -7,8 +7,7 @@ class Promotion < ActiveRecord::Base
   accepts_nested_attributes_for :promotion_rules
   alias_method :rules, :promotion_rules
 
-  MATCH_POLICIES = %w(any all)
-  preference :match_policy, :string, :default => MATCH_POLICIES.first
+  MATCH_POLICIES = %w(all any)
 
   def eligible?(order)
     # TODO - evalulate rules
