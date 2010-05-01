@@ -5,5 +5,10 @@ class Promotion::Rules::ItemTotal < PromotionRule
   preference :operator, :string, :default => '>'
   
   OPERATORS = ['gt', 'gte']
+  
+  
+  def eligible?(order)
+    order.item_total.send(preferred_operator == 'gte' ? :>= : :>, preferred_amount)
+  end
 
 end
