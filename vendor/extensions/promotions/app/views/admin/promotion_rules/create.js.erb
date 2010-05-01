@@ -1,4 +1,5 @@
 jQuery('#rules').append('<%= escape_javascript( render('admin/promotions/promotion_rule', :rule => object) ) %>');
 jQuery('#<%= dom_id object %>').hide();
 jQuery('#<%= dom_id object %>').fadeIn();
-jQuery('#<%= dom_id object %> .tokeninput').productPicker();
+jQuery('#<%= dom_id object %> .tokeninput.products').productPicker();
+jQuery('#<%= dom_id object %> .tokeninput.users').userPicker();

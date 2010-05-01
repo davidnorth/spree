@@ -150,19 +150,29 @@ jQuery.fn.product_autocomplete = function(){
     });
 }
 
-jQuery.fn.productPicker = function(){
-  jQuery(this).tokenInput(ajax_urls.product_search_basic_json, {
+
+
+jQuery.fn.objectPicker = function(url){
+  jQuery(this).tokenInput(url, {
+    searchDelay          : 600,
     hintText             : strings.type_to_search,
     noResultsText        : strings.no_results,
     searchingText        : strings.searching,
     prePopulateFromInput : true
   });
-}
+};
 
+jQuery.fn.productPicker = function(){
+  jQuery(this).objectPicker(ajax_urls.product_search_basic_json);
+}
+jQuery.fn.userPicker = function(){
+  jQuery(this).objectPicker(ajax_urls.user_search_basic_json);
+}
 
 jQuery(document).ready(function() {
 
   jQuery('.tokeninput.products').productPicker();
+  jQuery('.tokeninput.users').userPicker();
 
 });
 

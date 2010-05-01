@@ -7,11 +7,26 @@ class Admin::UsersController < Admin::BaseController
 
   index.response do |wants|
     wants.html { render :action => :index }
-    wants.json { render :json => @collection.to_json(:include => {:bill_address => {:include => [:state, :country]}, :ship_address => {:include => [:state, :country]}}) }
+    wants.json { render :json => json_data }
   end
 
   private
+
+  # Allow different formats of json data to suit different ajax calls
+  def json_data
+    json_format = params[:json_format] or 'default'
+    case json_format
+    when 'basic'
+      collection.map {|u| {'id' => u.id, 'name' => u.email}}.to_json
+    else
+      collection.to_json(:include => 
+        {:bill_address => {:include => [:state, :country]}, 
+        :ship_address => {:include => [:state, :country]}})
+    end
+  end
+  
   def collection
+    return @collection if @collection.present?
     unless request.xhr?
       @search = User.searchlogic(params[:search])
 

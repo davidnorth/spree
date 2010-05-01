@@ -26,7 +26,6 @@ class Promotion::Rules::Product < PromotionRule
   end
   def product_ids_string=(s)
     self.product_ids = s.to_s.split(',').map(&:strip)
-    puts self.product_ids.inspect
   end
     
 end
