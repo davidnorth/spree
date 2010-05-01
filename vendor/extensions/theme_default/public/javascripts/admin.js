@@ -150,15 +150,19 @@ jQuery.fn.product_autocomplete = function(){
     });
 }
 
-
-jQuery(document).ready(function() {
-
-  jQuery('.tokeninput.products').tokenInput(ajax_urls.product_search_basic_json, {
+jQuery.fn.productPicker = function(){
+  jQuery(this).tokenInput(ajax_urls.product_search_basic_json, {
     hintText             : strings.type_to_search,
     noResultsText        : strings.no_results,
     searchingText        : strings.searching,
     prePopulateFromInput : true
   });
-  
+}
+
+
+jQuery(document).ready(function() {
+
+  jQuery('.tokeninput.products').productPicker();
+
 });
 
