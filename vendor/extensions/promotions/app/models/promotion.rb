@@ -10,14 +10,22 @@ class Promotion < ActiveRecord::Base
   MATCH_POLICIES = %w(all any)
 
   def eligible?(order)
-    # TODO - evalulate rules
-    !expired?
+    !expired? && rules_are_eligible?(order)
   end
-
+  
   def expired?
     starts_at && Time.now < starts_at ||
     expires_at && Time.now > expires_at || 
     usage_limit && promotion_credits.with_order.count >= usage_limit
+  end
+
+  def rules_are_eligible?(order)
+    return true if rules.none?
+    if match_policy == 'all'
+      rules.all?{|r| r.eligible?(order)}
+    else
+      rules.any?{|r| r.eligible?(order)}
+    end
   end
 
   def create_discount(order)
