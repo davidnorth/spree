@@ -9,8 +9,8 @@
 <p class="field products_rule_products">
   <label>
     <%= t('product_rule.choose_products') %><br />
-    <%= text_field_tag "#{param_prefix}[product_ids_string]", promotion_rule.product_ids_string, :class => 'tokeninput products' %>
-  </label>
+    <% product_names_hash = promotion_rule.products.inject({}){|memo,item| memo[item.id] = item.name; memo} %>
+    <input type="text" name="<%= param_prefix %>[product_ids_string]" value="<%= promotion_rule.product_ids_string %>" class="tokeninput products" data-names='<%= product_names_hash.to_json %>' />
 </p>
 <p>
   <label>

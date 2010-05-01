@@ -17,6 +17,7 @@ $.fn.tokenInput = function (url, options) {
         noResultsText: "No results",
         searchingText: "Searching...",
         searchDelay: 300,
+        prePopulateFromInput: false,
         minChars: 1,
         tokenLimit: null,
         jsonContainer: null,
@@ -187,6 +188,22 @@ $.TokenList = function (input, settings) {
                            .blur(function () {
                                input_box.blur();
                            });
+                           
+
+    if(settings.prePopulateFromInput){
+      settings.prePopulate = [];
+      if(hidden_input.attr('data-names') != undefined){
+        var names = $.parseJSON(hidden_input.attr('data-names'));
+      }
+      $.each(hidden_input.val().trim().split(','), function(i, val) {
+        if(val != '' && names != undefined && names[val] != undefined){
+          settings.prePopulate.push({ id : val, name : names[val] });
+        }
+      });
+      hidden_input.val(hidden_input.val() + ',');
+      
+    }                      
+    
 
     // Keep a reference to the selected token and dropdown item
     var selected_token = null;
@@ -252,6 +269,7 @@ $.TokenList = function (input, settings) {
     // Pre-populate list if items exist
     function init_list () {
         li_data = settings.prePopulate;
+        
         if(li_data && li_data.length) {
             for(var i in li_data) {
                 var this_token = $("<li><p>"+li_data[i].name+"</p> </li>")
@@ -278,10 +296,16 @@ $.TokenList = function (input, settings) {
 
                 // Save this token id
                 var id_string = li_data[i].id + ","
-                hidden_input.val(hidden_input.val() + id_string);
+
+                // Leave input value alone if using prePopulateFromInput
+                if(!settings.prePopulateFromInput){
+                  hidden_input.val(hidden_input.val() + id_string);
+                }
             }
         }
-    }
+        
+     }
+        
 
     function is_printable_character(keycode) {
         if((keycode >= 48 && keycode <= 90) ||      // 0-1a-z
@@ -460,11 +484,8 @@ $.TokenList = function (input, settings) {
                 .mouseover(function (event) {
                     select_dropdown_item(get_element_from_event(event, "li"));
                 })
-                .click(function (event) {
-                    add_token(get_element_from_event(event, "li"));
-                })
                 .mousedown(function (event) {
-                    // Stop user selecting text on tokens
+                    add_token(get_element_from_event(event, "li"));
                     return false;
                 })
                 .hide();
