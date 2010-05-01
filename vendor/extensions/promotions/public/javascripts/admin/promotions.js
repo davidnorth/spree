@@ -1,4 +1,4 @@
-jQuery(document).ready(function() {
+var initProductRuleSourceField = function(){
   
   $products_source_field = jQuery('.products_rule_products_source_field input');
   $products_source_field.click(function() {
@@ -17,5 +17,10 @@ jQuery(document).ready(function() {
     $(this).triggerHandler('click');
   });
 
+};
+
+
+jQuery(document).ready(function() {
+  initProductRuleSourceField();
 });
 

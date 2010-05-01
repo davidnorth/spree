@@ -99,6 +99,7 @@ class Admin::ProductsController < Admin::BaseController
                                        :page     => params[:page])
       else
         @collection = Product.find( :all,
+                                    :limit => (params[:limit] || 100),
                                     :conditions => ["name like ?", "%#{params[:q]}%"],
                                     :include =>  [{:variants => [:images,  {:option_values => :option_type}]}, :master, :images])
                                     
