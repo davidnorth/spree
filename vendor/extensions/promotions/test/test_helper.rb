@@ -14,3 +14,13 @@ end
 require "#{SPREE_ROOT}/test/test_helper"
 
 require 'factories/promotion_factory.rb'
+
+class MockOrder
+  def initialize(attrs = {})
+    @attrs = attrs
+    attrs.each do |k,v|
+      send("#{k}=", v)
+    end
+  end
+  attr_accessor :item_total, :user, :line_items
+end

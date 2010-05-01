@@ -1,20 +1,12 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class MockOrder
-  def initialize(item_total)
-    @item_total = item_total
-  end
-  attr_accessor :item_total
-end
-
 class ItemTotalRuleTest < Test::Unit::TestCase
 
   context "instance" do
     setup do
-      create_new_order_v2
-      @order_199 = MockOrder.new(199.00)
-      @order_200 = MockOrder.new(200.00)
-      @order_201 = MockOrder.new(201.00)
+      @order_199 = MockOrder.new(:item_total => 199.00)
+      @order_200 = MockOrder.new(:item_total => 200.00)
+      @order_201 = MockOrder.new(:item_total => 201.00)
       
       def @order_200.item_total
         200.00
