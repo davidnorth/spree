@@ -14,6 +14,16 @@ class Promotion::Rules::Product < PromotionRule
     product_group ? product_group.products : products
   end
   
+  def eligible?(order)
+    return true if eligible_products.empty?
+    order_products = order.line_items.map{|li| li.variant.product}
+    if preferred_match_policy == 'all'
+      eligible_products.all? {|p| order_products.include?(p) }
+    else
+      order_products.any? {|p| eligible_products.include?(p) }
+    end
+  end
+  
 
   def products_source=(source)
     if source.to_s == 'manual'
