@@ -1,6 +1,8 @@
 ---
 en-US:
   add_rule_of_type: Add rule of type
+  coupon: Coupon
+  coupon_code: Coupon code
   editing_promotion: Editing Promotion
   new_promotion: New Promotion
   no_rules_added: No rules added
