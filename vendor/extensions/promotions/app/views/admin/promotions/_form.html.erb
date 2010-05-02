@@ -1,8 +1,13 @@
 <fieldset id="general_fields">
   <legend>General</legend>
+  <% f.field_container :name do %>
+    <%= f.label :name %><br />
+    <%= f.text_field :name %>
+  <% end %>
+
   <% f.field_container :description do %>
     <%= f.label :description %><br />
-    <%= f.text_field :description %>
+    <%= f.text_area :description, :style => "height:50px" %>
   <% end %>
 
   <% f.field_container :code do %>

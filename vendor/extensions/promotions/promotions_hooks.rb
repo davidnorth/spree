@@ -8,5 +8,7 @@ class PromotionsHooks < Spree::ThemeSupport::HookListener
     </tr>
     )
   end
-
+  
+  insert_after :product_properties, 'products/promotions'
+    
 end
