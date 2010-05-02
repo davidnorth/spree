@@ -7,6 +7,13 @@
   <div>
     <h4><%= promotion.name %></h4>
     <p><%= promotion.description %></p>
+    <% if promotion.products.any? %>
+    <ul>
+      <% for product in promotion.products %>
+        <li><%= link_to product.name, product_path(product) %></li>
+      <% end %>
+    </ul>
+    <% end %>
   </div>
   <% end %>
 

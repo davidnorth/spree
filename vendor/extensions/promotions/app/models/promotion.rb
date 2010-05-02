@@ -44,4 +44,11 @@ class Promotion < ActiveRecord::Base
     end
   end
   
+
+
+  # Products assigned to all product rules
+  def products
+    @products ||= rules.of_type("Promotion::Rules::Product").map(&:products).flatten.uniq
+  end
+
 end
