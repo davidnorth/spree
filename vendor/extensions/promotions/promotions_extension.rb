@@ -15,7 +15,9 @@ class PromotionsExtension < Spree::Extension
       end
     end
     
-    [Promotion::Rules::ItemTotal, Promotion::Rules::Product, Promotion::Rules::User].each &:register
+    [Promotion::Rules::ItemTotal, Promotion::Rules::Product, Promotion::Rules::User, Promotion::Rules::FirstOrder].each &:register
+
+    [Calculator::FreeShipping].each(&:register)
 
   end
 end

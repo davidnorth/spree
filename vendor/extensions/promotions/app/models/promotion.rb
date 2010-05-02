@@ -9,6 +9,9 @@ class Promotion < ActiveRecord::Base
 
   MATCH_POLICIES = %w(all any)
 
+  named_scope :automatic, :conditions => "code IS NULL OR code = ''"
+
+
   def eligible?(order)
     !expired? && rules_are_eligible?(order)
   end

@@ -4,6 +4,7 @@ en-US:
   coupon: Coupon
   coupon_code: Coupon code
   editing_promotion: Editing Promotion
+  free_shipping: Free Shipping
   new_promotion: New Promotion
   no_rules_added: No rules added
   promotions: Promotions
@@ -22,6 +23,9 @@ en-US:
     item_total:
       name: Item total
       description: Order total meets these criteria
+    first_order:
+      name: First order
+      description: Must be the customer's first order
   product_rule:
     choose_products: Choose products
     label: "Order must contain {{select}} of these products"
