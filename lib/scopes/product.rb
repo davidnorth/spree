@@ -12,6 +12,7 @@ module Scopes::Product
       :in_name => [:words],
       :in_name_or_keywords => [:words],
       :in_name_or_description => [:words],
+      :with_ids => [:ids]
     },
     # Scopes for selecting products based on option types and properties
     :values => {
@@ -171,6 +172,11 @@ module Scopes::Product
   Product.scope_procedure :in_name_or_description, lambda{|words|
     Product.name_or_description_or_meta_description_or_meta_keywords_like_any(prepare_words(words))
   }
+  
+  Product.named_scope :with_ids, lambda{|ids|
+    ids = ids.split(',') if ids.is_a?(String)
+    { :conditions => {:id => ids} }
+  }
 
   # Sorts products from most popular (poularity is extracted from how many
   # times use has put product in cart, not completed orders)
@@ -243,4 +249,6 @@ SQL
       :conditions => conditions,
     }
   end
+  
+  
 end

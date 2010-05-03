@@ -676,6 +676,12 @@ en-US:
         description: "Selects all products that have at least one variant that have specified value as either option or property (eg. red)"
         name: With value
         sentence: with value <em>%s</em>
+      with_ids:
+        args:
+          ids: IDs
+        description: "Select specific products"
+        name: Products with IDs
+        sentence: with IDs <em>%s</em>
       with_option:
         args:
           option: Option
