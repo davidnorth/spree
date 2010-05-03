@@ -198,4 +198,11 @@ class ProductGroup < ActiveRecord::Base
     end    
   end
   
+  # Build a new product group with a scope to filter by specified products
+  def self.new_from_products(products, attrs = {})
+    pg = new(attrs)
+    pg.product_scopes.build(:name => 'with_ids', :arguments => [products.map(&:id).join(',')])
+    pg
+  end
+  
 end
