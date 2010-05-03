@@ -40,6 +40,10 @@ module Scopes::Product
     :descend_by_popularity,
   ]
   
+  ATTRIBUTE_HELPER_METHODS = {
+    :with_ids => :product_picker_field
+  }
+  
   # default product scope only lists available and non-deleted products
   ::Product.named_scope :active,      lambda { |*args|
     Product.not_deleted.available(args.first).scope(:find)
