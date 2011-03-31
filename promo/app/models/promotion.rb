@@ -3,11 +3,25 @@ class Promotion < Activator
   calculated_adjustments
   alias credits promotion_credits
 
-  has_many :promotion_rules, :autosave => true
+
+  MATCH_POLICIES = %w(all any)
+
+  preference :combine, :boolean, :default => false
+  preference :usage_limit, :integer
+  preference :match_policy, :string, :default => MATCH_POLICIES.first
+
+  [:combine, :usage_limit, :match_policy].each do |field|
+    alias_method field, "preferred_#{field}"
+    alias_method "#{field}=", "preferred_#{field}="
+  end
+
+
+
+  has_many :promotion_rules, :foreign_key => 'activator_id', :autosave => true
   accepts_nested_attributes_for :promotion_rules
   alias_method :rules, :promotion_rules
 
-  validates :name, :code, :presence => true
+  validates :name, :presence => true
 
   # TODO: Remove that after fix for https://rails.lighthouseapp.com/projects/8994/tickets/4329-has_many-through-association-does-not-link-models-on-association-save
   # is provided
@@ -17,7 +31,6 @@ class Promotion < Activator
     end
   end
 
-  MATCH_POLICIES = %w(all any)
 
   # TODO: This should only fetch promotions that are applied automatically, e.g. when cart contents changed
   scope :automatic#, where("code IS NULL OR code = ''")
