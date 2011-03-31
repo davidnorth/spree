@@ -4,7 +4,6 @@ require 'spree_promo_hooks'
 module SpreePromo
   class Engine < Rails::Engine
 
-    @@first_activate = true
     def self.activate
       # put class_eval and other logic that depends on classes outside of the engine inside this block
       Product.class_eval do
@@ -49,7 +48,8 @@ module SpreePromo
           self.payment_total = payments.completed.map(&:amount).sum
           self.item_total = line_items.map(&:amount).sum
 
-          process_automatic_promotions
+          check_promotion_eligibility
+          # process_automatic_promotions
 
           if force_adjustment_recalculation
             applicable_adjustments, adjustments_to_destroy = adjustments.partition{|a| a.applicable?}
@@ -62,21 +62,26 @@ module SpreePromo
         end
 
 
-        def process_automatic_promotions
-          #promotion_credits.reload.clear
-          eligible_automatic_promotions.each do |coupon|
-            # can't use coupon.create_discount as it re-saves the order causing an infinite loop
-            if amount = coupon.calculator.compute(line_items)
-              amount = item_total if amount > item_total
-              promotion_credits.reload.clear unless coupon.combine? and promotion_credits.all? { |credit| credit.adjustment_source.combine? }
-              promotion_credits.create!({
-                  :source => coupon,
-                  :amount => -amount.abs,
-                  :label => coupon.description
-                })
-            end
-          end.compact
+        # TODO: Remove promotions that are no longer eligible
+        def check_promotion_eligibility
+
         end
+
+        # def process_automatic_promotions
+        #   #promotion_credits.reload.clear
+        #   eligible_automatic_promotions.each do |coupon|
+        #     # can't use coupon.create_discount as it re-saves the order causing an infinite loop
+        #     if amount = coupon.calculator.compute(line_items)
+        #       amount = item_total if amount > item_total
+        #       promotion_credits.reload.clear unless coupon.combine? and promotion_credits.all? { |credit| credit.adjustment_source.combine? }
+        #       promotion_credits.create!({
+        #           :source => coupon,
+        #           :amount => -amount.abs,
+        #           :label => coupon.description
+        #         })
+        #     end
+        #   end.compact
+        # end
 
         def eligible_automatic_promotions
           @eligible_automatic_coupons ||= Promotion.automatic.select{|c| c.eligible?(self)}
@@ -125,18 +130,6 @@ module SpreePromo
         }
       end
 
-
-      # Fetch matching activators for all Spree events
-      if @@first_activate
-        ActiveSupport::Notifications.subscribe(/^spree\./) do |*args|
-          name, start_time, end_time, id, payload = args
-          Promotion::Activator::Base.event_name_starts_with(name).each do |activator|
-            activator.activate(payload)
-          end
-        end
-      end
-
-      @@first_activate = false
     end
 
     config.autoload_paths += %W(#{config.root}/lib)
