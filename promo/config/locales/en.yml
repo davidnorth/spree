@@ -1,5 +1,6 @@
 ---
 en:
+  add_action_of_type: Add action of type
   add_rule_of_type: Add rule of type
   coupon: Coupon
   coupon_code: Coupon code
@@ -9,12 +10,23 @@ en:
   may_be_combined_with_other_promotions: May be combined with other promotions
   new_promotion: New Promotion
   no_rules_added: No rules added
+  promotion_actions: Actions
   promotions: Promotions
   promotion_form:
     match_policies:
       all: Match any of these rules
       any: Match all of these rules
   promotions_description: Manage offers and coupons with promotions
+  promotion_action_types:
+    create_adjustment:
+      name: Create adjustment
+      description: Creates a promotion credit adjustment on the order
+    create_line_items:
+      name: Create line items
+      description: Adds the products associated with the promotion to the cart
+    give_store_credit:
+      name: Give store credit
+      description: Gives the user store credit of the ammount specified
   promotion_rule_types:
     user:
       name: User
