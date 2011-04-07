@@ -47,9 +47,10 @@ class Promotion < Activator
   scope :automatic#, where("code IS NULL OR code = ''")
 
   def activate(payload)
-    order = payload.delete(:order)
-    if eligible?(order, payload)
-      # TODO: perform promotion actions here
+    if eligible?(payload[:order], payload)
+      actions.each do |action|
+        action.perform(payload)
+      end
     end
   end
 
