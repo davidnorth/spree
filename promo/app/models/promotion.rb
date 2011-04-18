@@ -44,9 +44,6 @@ class Promotion < Activator
   end
 
 
-  # TODO: This should only fetch promotions that are applied automatically, e.g. when cart contents changed
-  scope :automatic#, where("code IS NULL OR code = ''")
-
   def activate(payload)
     if eligible?(payload[:order], payload)
       actions.each do |action|
